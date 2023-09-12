@@ -1,0 +1,1 @@
+Minha solução para a segunda atividade backend do estagio na NewGo.
