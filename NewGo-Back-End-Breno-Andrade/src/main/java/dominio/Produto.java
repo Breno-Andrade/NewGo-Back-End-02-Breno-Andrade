@@ -1,6 +1,7 @@
 package dominio;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Produto {
@@ -12,11 +13,11 @@ public class Produto {
     private double preco;
     private double quantidade;
     private double estoque_min;
-    private Date dtcreate;
-    private Date dtupdate;
+    private Timestamp dtcreate;
+    private Timestamp dtupdate;
     private boolean lativo;
 
-    public Produto(long id, UUID hash, String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min, Date dtcreate, Date dtupdate, boolean lativo) {
+    public Produto(long id, UUID hash, String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min, Timestamp dtcreate, Timestamp dtupdate, boolean lativo) {
         this.id = id;
         this.hash = hash;
         this.nome = nome;
@@ -103,19 +104,19 @@ public class Produto {
         this.estoque_min = estoque_min;
     }
 
-    public Date getDtcreate() {
+    public Timestamp getDtcreate() {
         return dtcreate;
     }
 
-    public void setDtcreate(Date dtcreate) {
+    public void setDtcreate(Timestamp dtcreate) {
         this.dtcreate = dtcreate;
     }
 
-    public Date getDtupdate() {
+    public Timestamp getDtupdate() {
         return dtupdate;
     }
 
-    public void setDtupdate(Date dtupdate) {
+    public void setDtupdate(Timestamp dtupdate) {
         this.dtupdate = dtupdate;
     }
 
