@@ -17,27 +17,23 @@ public class Produto {
     private Timestamp dtupdate;
     private boolean lativo;
 
-    public Produto(long id, UUID hash, String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min, Timestamp dtcreate, Timestamp dtupdate, boolean lativo) {
-        this.id = id;
-        this.hash = hash;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.ean13 = ean13;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.estoque_min = estoque_min;
-        this.dtcreate = dtcreate;
-        this.dtupdate = dtupdate;
-        this.lativo = lativo;
-    }
-
     public Produto(String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min) {
         this.nome = nome;
         this.descricao = descricao;
         this.ean13 = ean13;
-        this.preco = preco;
-        this.quantidade = quantidade;
-        this.estoque_min = estoque_min;
+        setPreco(preco);
+        setQuantidade(quantidade);
+        setEstoque_min(estoque_min);
+    }
+
+    public Produto(long id, UUID hash, String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min, Timestamp dtcreate, Timestamp dtupdate, boolean lativo) {
+        this(nome, descricao, ean13, preco, quantidade, estoque_min);
+        
+        this.id = id;
+        this.hash = hash;
+        this.dtcreate = dtcreate;
+        this.dtupdate = dtupdate;
+        this.lativo = lativo;
     }
 
     public long getId() {
@@ -85,6 +81,9 @@ public class Produto {
     }
 
     public void setPreco(double preco) {
+        if (preco < 0){
+            throw new IllegalArgumentException("O preço não pode ser negativo");
+        }
         this.preco = preco;
     }
 
@@ -93,6 +92,9 @@ public class Produto {
     }
 
     public void setQuantidade(double quantidade) {
+        if (quantidade < 0){
+            throw new IllegalArgumentException("A quantidade não pode ser negativa");
+        }
         this.quantidade = quantidade;
     }
 
@@ -101,6 +103,9 @@ public class Produto {
     }
 
     public void setEstoque_min(double estoque_min) {
+        if (estoque_min < 0){
+            throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa");
+        }
         this.estoque_min = estoque_min;
     }
 
