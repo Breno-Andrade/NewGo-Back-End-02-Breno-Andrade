@@ -18,7 +18,7 @@ public class Produto {
     private boolean lativo;
 
     public Produto(String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min) {
-        this.nome = nome;
+        setNome(nome);
         this.descricao = descricao;
         this.ean13 = ean13;
         setPreco(preco);
@@ -28,7 +28,7 @@ public class Produto {
 
     public Produto(long id, UUID hash, String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min, Timestamp dtcreate, Timestamp dtupdate, boolean lativo) {
         this(nome, descricao, ean13, preco, quantidade, estoque_min);
-        
+
         this.id = id;
         this.hash = hash;
         this.dtcreate = dtcreate;
@@ -57,6 +57,9 @@ public class Produto {
     }
 
     public void setNome(String nome) {
+        if (nome.isEmpty() || nome.trim().isEmpty()){
+            throw new IllegalArgumentException("Você deve inserir um nome para o produto.");
+        }
         this.nome = nome;
     }
 
