@@ -118,24 +118,21 @@ public class ProdutoDAO {
 
     public Produto atualizarProduto(UUID hash, Produto produto) {
         try {
-            String updateSql = "UPDATE produto SET nome = ?, descricao = ?, ean13 = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
+            String updateSql = "UPDATE produto SET descricao = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(updateSql);
 
-            comandoComConexao.setString(1, produto.getNome());
-            comandoComConexao.setString(2, produto.getDescricao());
-            comandoComConexao.setString(3, produto.getEan13());
-            comandoComConexao.setDouble(4, produto.getPreco());
-            comandoComConexao.setDouble(5, produto.getQuantidade());
-            comandoComConexao.setDouble(6, produto.getEstoque_min());
-            comandoComConexao.setObject(7, hash);
+            comandoComConexao.setString(1, produto.getDescricao());
+            comandoComConexao.setDouble(2, produto.getPreco());
+            comandoComConexao.setDouble(3, produto.getQuantidade());
+            comandoComConexao.setDouble(4, produto.getEstoque_min());
+            comandoComConexao.setObject(5, hash);
 
             int linhasAfetadas = comandoComConexao.executeUpdate();
 
             if (linhasAfetadas == 0) {
                 throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
             }
-
 
             comandoComConexao.close();
         } catch (SQLException ex) {
