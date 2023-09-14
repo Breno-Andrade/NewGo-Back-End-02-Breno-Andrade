@@ -50,7 +50,15 @@ public class ProdutoControladora extends HttpServlet {
             stringBuffer.append(atributos);
         }
 
-        Produto produto = gson.fromJson(stringBuffer.toString(), Produto.class);
+        Produto produtoTemp = gson.fromJson(stringBuffer.toString(), Produto.class);
+        Produto produto = new Produto(
+                produtoTemp.getNome(),
+                produtoTemp.getDescricao(),
+                produtoTemp.getEan13(),
+                produtoTemp.getPreco(),
+                produtoTemp.getQuantidade(),
+                produtoTemp.getEstoque_min()
+        );
 
         PrintWriter printWriter = resp.getWriter();
         printWriter.print(gson.toJson(produtoDAO.inserirNovoProduto(produto)));

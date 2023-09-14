@@ -30,8 +30,10 @@ public class ProdutoDAO {
             ResultSet resultadoOperacao = comandoComConexao.getGeneratedKeys();
             resultadoOperacao.next();
 
-            Long generatedId = resultadoOperacao.getLong("id");
-            produto.setId(generatedId);
+            Long idGerado = resultadoOperacao.getLong("id");
+            produto.setId(idGerado);
+            String hashGerado = resultadoOperacao.getString("hash");
+            produto.setHash(UUID.fromString(hashGerado));
 
             comandoComConexao.close();
             resultadoOperacao.close();
