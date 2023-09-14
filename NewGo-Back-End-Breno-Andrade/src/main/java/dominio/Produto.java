@@ -20,7 +20,7 @@ public class Produto {
     public Produto(String nome, String descricao, String ean13, double preco, double quantidade, double estoque_min) {
         setNome(nome);
         this.descricao = descricao;
-        this.ean13 = ean13;
+        setEan13(ean13);
         setPreco(preco);
         setQuantidade(quantidade);
         setEstoque_min(estoque_min);
@@ -76,6 +76,9 @@ public class Produto {
     }
 
     public void setEan13(String ean13) {
+        if ((ean13.length() != 13)){
+            throw new IllegalArgumentException("O código ean13 deve conter 13 caracteres.");
+        }
         this.ean13 = ean13;
     }
 
