@@ -110,7 +110,7 @@ public class Produto {
 
     public void setEstoque_min(double estoque_min) {
         if (estoque_min < 0){
-            throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa");
+            throw new IllegalArgumentException("O estoque mínimo não pode ser negativo");
         }
         this.estoque_min = estoque_min;
     }
