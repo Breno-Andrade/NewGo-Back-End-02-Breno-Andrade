@@ -29,7 +29,8 @@ public class ProdutoControladora extends HttpServlet {
 
         PrintWriter printer = resp.getWriter();
 
-        printer.print(gson.toJson(produtoDAO.buscarTodos()));
+        UUID produtoHash = UUID.fromString(req.getParameter("hash"));
+        printer.print(gson.toJson(produtoDAO.buscarPorHash(produtoHash)));
         printer.flush();
     }
 

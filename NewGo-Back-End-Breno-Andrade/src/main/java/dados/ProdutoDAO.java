@@ -42,11 +42,11 @@ public class ProdutoDAO {
         return produto;
     }
 
-    private Produto buscarProduto(String parametroDeBusca, String sql) {
+    private Produto buscarProduto(Object parametroDeBusca, String sql) {
         PreparedStatement comandoSqlComConexao;
         try {
             comandoSqlComConexao = conexao.prepareStatement(sql);
-            comandoSqlComConexao.setString(1, parametroDeBusca);
+            comandoSqlComConexao.setObject(1, parametroDeBusca);
             ResultSet resultadoOperacao = comandoSqlComConexao.executeQuery();
 
             Produto produto = null;
@@ -109,8 +109,8 @@ public class ProdutoDAO {
     }
 
 
-    public Produto buscarPorHash(String hash) {
-        String selectSql = "SELECT * FROM produto WHERE LOWER(hash) = LOWER(?)";
+    public Produto buscarPorHash(UUID hash) {
+        String selectSql = "SELECT * FROM produto WHERE hash = ?";
         return buscarProduto(hash, selectSql);
     }
 
