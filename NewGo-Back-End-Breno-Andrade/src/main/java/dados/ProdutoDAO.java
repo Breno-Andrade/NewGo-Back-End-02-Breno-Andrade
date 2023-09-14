@@ -3,12 +3,15 @@ package dados;
 import dominio.Produto;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ProdutoDAO {
     private GeradorConexao gerador = new GeradorConexao();
     private Connection conexao = gerador.gerarConexao();
-    public void inserirNovoProduto(Produto produto) {
+
+    public Produto inserirNovoProduto(Produto produto) {
         try {
             String insertSql = "INSERT INTO produto (nome, descricao, ean13, preco, quantidade, estoque_min)" +
                     "VALUES (?, ?, ?, ?, ?, ?)";
@@ -32,11 +35,11 @@ public class ProdutoDAO {
 
             comandoComConexao.close();
             resultadoOperacao.close();
-
         }
         catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+        return produto;
     }
 
     private Produto buscarProduto(String parametroDeBusca, String sql) {
@@ -71,14 +74,49 @@ public class ProdutoDAO {
         }
     }
 
-    public Produto buscarPorNome(String nomeDoProduto) {
-        String selectSql = "SELECT * FROM produto WHERE LOWER(nome) = LOWER(?)";
-        return buscarProduto(nomeDoProduto, selectSql);
+    public List<Produto> buscarTodos() {
+        String selectAllSql = "SELECT * FROM produto";
+        List<Produto> produtos = new ArrayList<Produto>();
+
+        try {
+            PreparedStatement comandoSqlComConexao = conexao.prepareStatement(selectAllSql);
+            ResultSet resultadoOperacao = comandoSqlComConexao.executeQuery();
+
+            while (resultadoOperacao.next()) {
+                Produto produto = new Produto(
+                        resultadoOperacao.getLong("id"),
+                        UUID.fromString(resultadoOperacao.getString("hash")),
+                        resultadoOperacao.getString("nome"),
+                        resultadoOperacao.getString("descricao"),
+                        resultadoOperacao.getString("ean13"),
+                        resultadoOperacao.getDouble("preco"),
+                        resultadoOperacao.getDouble("quantidade"),
+                        resultadoOperacao.getDouble("estoque_min"),
+                        resultadoOperacao.getTimestamp("dtcreate"),
+                        resultadoOperacao.getTimestamp("dtupdate"),
+                        resultadoOperacao.getBoolean("lativo")
+                );
+
+                produtos.add(produto);
+            }
+
+            comandoSqlComConexao.close();
+            resultadoOperacao.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return produtos;
     }
 
-    public void atualizarProduto(Long id, Produto produto) {
+
+    public Produto buscarPorHash(String hash) {
+        String selectSql = "SELECT * FROM produto WHERE LOWER(hash) = LOWER(?)";
+        return buscarProduto(hash, selectSql);
+    }
+
+    public Produto atualizarProduto(UUID hash, Produto produto) {
         try {
-            String updateSql = "UPDATE produto SET nome = ?, descricao = ?, ean13 = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE id = ?";
+            String updateSql = "UPDATE produto SET nome = ?, descricao = ?, ean13 = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(updateSql);
 
@@ -88,7 +126,7 @@ public class ProdutoDAO {
             comandoComConexao.setDouble(4, produto.getPreco());
             comandoComConexao.setDouble(5, produto.getQuantidade());
             comandoComConexao.setDouble(6, produto.getEstoque_min());
-            comandoComConexao.setLong(7, id); // ID do produto a ser atualizado
+            comandoComConexao.setObject(7, hash);
 
             int linhasAfetadas = comandoComConexao.executeUpdate();
 
@@ -96,27 +134,29 @@ public class ProdutoDAO {
                 throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
             }
 
+
             comandoComConexao.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+        return produto;
     }
 
-    public void excluirProduto(long idDoProduto) {
+    public String excluirProduto(UUID hash) {
         try {
-            String deleteSql = "DELETE FROM produto WHERE id = ?";
+            String deleteSql = "DELETE FROM produto WHERE hash = ?";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(deleteSql);
 
-            comandoComConexao.setLong(1, idDoProduto); // ID do produto a ser excluído
+            comandoComConexao.setObject(1, hash);
 
             int linhasAfetadas = comandoComConexao.executeUpdate();
 
             if (linhasAfetadas == 0) {
                 throw new RuntimeException("Nenhum registro excluído. Verifique o ID do produto.");
             }
-
             comandoComConexao.close();
+            return "Produto excluido com sucesso.";
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
