@@ -1,6 +1,5 @@
-package dominio.entidade;
+package dominio.produto.entidade;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.UUID;
 

@@ -2,7 +2,7 @@ package aplicacao;
 
 import com.google.gson.Gson;
 import infraestrutura.ProdutoDAO;
-import dominio.entidade.Produto;
+import dominio.produto.entidade.Produto;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
