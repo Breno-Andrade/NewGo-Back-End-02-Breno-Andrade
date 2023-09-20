@@ -1,4 +1,4 @@
-package dados;
+package infraestrutura;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

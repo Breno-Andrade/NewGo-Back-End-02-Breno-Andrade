@@ -1,4 +1,4 @@
-package dados;
+package infraestrutura;
 
 import dominio.Produto;
 

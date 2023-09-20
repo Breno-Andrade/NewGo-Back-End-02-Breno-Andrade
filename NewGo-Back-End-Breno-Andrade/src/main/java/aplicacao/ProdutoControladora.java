@@ -1,7 +1,7 @@
-package apresentacao;
+package aplicacao;
 
 import com.google.gson.Gson;
-import dados.ProdutoDAO;
+import infraestrutura.ProdutoDAO;
 import dominio.Produto;
 
 import javax.servlet.ServletException;
