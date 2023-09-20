@@ -1,6 +1,6 @@
 package infraestrutura;
 
-import dominio.Produto;
+import dominio.entidade.Produto;
 
 import java.sql.*;
 import java.util.ArrayList;

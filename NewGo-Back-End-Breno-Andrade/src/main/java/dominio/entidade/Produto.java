@@ -1,4 +1,4 @@
-package dominio;
+package dominio.entidade;
 
 import java.sql.Date;
 import java.sql.Timestamp;
