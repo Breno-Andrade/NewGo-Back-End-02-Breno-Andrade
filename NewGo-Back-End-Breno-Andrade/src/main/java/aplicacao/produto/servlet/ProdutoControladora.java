@@ -1,4 +1,4 @@
-package aplicacao;
+package aplicacao.produto.servlet;
 
 import com.google.gson.Gson;
 import infraestrutura.ProdutoDAO;
