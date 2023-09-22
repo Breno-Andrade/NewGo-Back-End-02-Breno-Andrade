@@ -1,6 +1,9 @@
 package aplicacao.produto.servlet;
 
+import aplicacao.produto.dto.ProdutoInsercaoDto;
+import aplicacao.produto.dto.ProdutoRetornoDto;
 import com.google.gson.Gson;
+import dominio.produto.servico.ProdutoServico;
 import infraestrutura.ProdutoDAO;
 import dominio.produto.entidade.Produto;
 
@@ -39,7 +42,6 @@ public class ProdutoControladora extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         req.setCharacterEncoding("utf-8");
-        resp.setStatus(201);
 
         StringBuffer stringBuffer = new StringBuffer();
 
@@ -50,19 +52,15 @@ public class ProdutoControladora extends HttpServlet {
             stringBuffer.append(atributos);
         }
 
-        Produto produtoTemp = gson.fromJson(stringBuffer.toString(), Produto.class);
-        Produto produto = new Produto(
-                produtoTemp.getNome(),
-                produtoTemp.getDescricao(),
-                produtoTemp.getEan13(),
-                produtoTemp.getPreco(),
-                produtoTemp.getQuantidade(),
-                produtoTemp.getEstoque_min()
-        );
+        ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
+
+        ProdutoServico produtoServico = new ProdutoServico();
+        ProdutoRetornoDto produtoRetornoDto = produtoServico.salvarNovoProduto(produtoDto);
 
         PrintWriter printWriter = resp.getWriter();
-        printWriter.print(gson.toJson(produtoDAO.inserirNovoProduto(produto)));
+        printWriter.print(gson.toJson(produtoRetornoDto));
         printWriter.flush();
+        resp.setStatus(201);
     }
 
     @Override
