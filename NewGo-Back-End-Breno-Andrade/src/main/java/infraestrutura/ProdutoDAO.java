@@ -13,27 +13,27 @@ public class ProdutoDAO {
 
     public Produto inserirNovoProduto(Produto produto) {
         try {
-            String insertSql = "INSERT INTO produto (nome, descricao, ean13, preco, quantidade, estoque_min)" +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            String insertSql = "INSERT INTO produto (hash, nome, descricao, ean13, preco, quantidade, estoque_min)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
-            comandoComConexao.setString(1, produto.getNome());
-            comandoComConexao.setString(2, produto.getDescricao());
-            comandoComConexao.setString(3, produto.getEan13());
-            comandoComConexao.setDouble(4, produto.getPreco());
-            comandoComConexao.setDouble(5, produto.getQuantidade());
-            comandoComConexao.setDouble(6, produto.getEstoque_min());
+            comandoComConexao.setObject(1, produto.getHash());
+            comandoComConexao.setString(2, produto.getNome());
+            comandoComConexao.setString(3, produto.getDescricao());
+            comandoComConexao.setString(4, produto.getEan13());
+            comandoComConexao.setDouble(5, produto.getPreco());
+            comandoComConexao.setDouble(6, produto.getQuantidade());
+            comandoComConexao.setDouble(7, produto.getEstoque_min());
 
             comandoComConexao.executeUpdate();
 
             ResultSet resultadoOperacao = comandoComConexao.getGeneratedKeys();
             resultadoOperacao.next();
 
-            Long idGerado = resultadoOperacao.getLong("id");
-            produto.setId(idGerado);
-            String hashGerado = resultadoOperacao.getString("hash");
-            produto.setHash(UUID.fromString(hashGerado));
+            produto.setId(resultadoOperacao.getLong("id"));
+            produto.setDtcreate(resultadoOperacao.getTimestamp("dtcreate"));
+            produto.setLativo(resultadoOperacao.getBoolean("lativo"));
 
             comandoComConexao.close();
             resultadoOperacao.close();
@@ -114,6 +114,24 @@ public class ProdutoDAO {
     public Produto buscarPorHash(UUID hash) {
         String selectSql = "SELECT * FROM produto WHERE hash = ?";
         return buscarProduto(hash, selectSql);
+    }
+
+    public boolean existeHash(UUID hash){
+        String selectSql = "SELECT * FROM produto WHERE hash = ?";
+
+        return buscarProduto(hash, selectSql) != null;
+    }
+
+    public boolean existeNome(String nome){
+        String selectSql = "SELECT * FROM produto WHERE nome = ?";
+
+        return buscarProduto(nome, selectSql) != null;
+    }
+
+    public boolean existeEan13(String ean13){
+        String selectSql = "SELECT * FROM produto WHERE ean13 = ?";
+
+        return buscarProduto(ean13, selectSql) != null;
     }
 
     public Produto atualizarProduto(UUID hash, Produto produto) {
