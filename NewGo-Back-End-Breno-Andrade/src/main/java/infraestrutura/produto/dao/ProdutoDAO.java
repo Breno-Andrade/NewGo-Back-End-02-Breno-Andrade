@@ -1,5 +1,6 @@
 package infraestrutura;
 
+import infraestrutura.produto.conexao.GeradorConexao;
 import infraestrutura.produto.entidade.Produto;
 
 import java.sql.*;
