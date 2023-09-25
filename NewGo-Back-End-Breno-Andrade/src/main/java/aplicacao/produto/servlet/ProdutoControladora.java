@@ -1,8 +1,10 @@
 package aplicacao.produto.servlet;
 
+import aplicacao.produto.dto.ProdutoAtualizacaoDto;
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import com.google.gson.Gson;
+import dominio.produto.servico.ProdutoAtualizacaoServico;
 import dominio.produto.servico.ProdutoInsercaoServico;
 import infraestrutura.produto.dao.ProdutoDAO;
 import infraestrutura.produto.entidade.Produto;
@@ -46,7 +48,7 @@ public class ProdutoControladora extends HttpServlet {
         StringBuffer stringBuffer = new StringBuffer();
 
         BufferedReader bufferedReader = req.getReader();
-        String atributos = null;
+        String atributos;
 
         while((atributos = bufferedReader.readLine()) != null) {
             stringBuffer.append(atributos);
@@ -74,16 +76,17 @@ public class ProdutoControladora extends HttpServlet {
         StringBuffer stringBuffer = new StringBuffer();
 
         BufferedReader bufferedReader = req.getReader();
-        String atributos = null;
+        String atributos;
 
         while((atributos = bufferedReader.readLine()) != null) {
             stringBuffer.append(atributos);
         }
 
-        Produto produto = gson.fromJson(stringBuffer.toString(), Produto.class);
+        ProdutoAtualizacaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoAtualizacaoDto.class);
 
         PrintWriter printWriter = resp.getWriter();
-        printWriter.print(gson.toJson(produtoDAO.atualizarProduto(produtoHash ,produto)));
+        ProdutoAtualizacaoServico produtoServico = new ProdutoAtualizacaoServico();
+        printWriter.print(gson.toJson(produtoServico.atualizarProduto(produtoHash ,produtoDto)));
         printWriter.flush();
     }
 
