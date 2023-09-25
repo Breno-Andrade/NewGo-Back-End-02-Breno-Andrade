@@ -5,7 +5,7 @@ import aplicacao.produto.dto.ProdutoRetornoDto;
 import infraestrutura.produto.entidade.Produto;
 import dominio.produto.servico.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.servico.excecao.ProdutoInvalidoExcecao;
-import infraestrutura.ProdutoDAO;
+import infraestrutura.produto.dao.ProdutoDAO;
 
 import java.util.UUID;
 
