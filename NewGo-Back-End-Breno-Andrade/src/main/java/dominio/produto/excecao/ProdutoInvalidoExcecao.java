@@ -1,4 +1,4 @@
-package dominio.produto.servico.excecao;
+package dominio.produto.excecao;
 
 public class ProdutoInvalidoExcecao extends IllegalArgumentException {
     public ProdutoInvalidoExcecao(ProdutoInsercaoExcecao mensagemErro) {

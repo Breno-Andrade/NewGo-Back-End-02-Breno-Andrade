@@ -3,8 +3,8 @@ package dominio.produto.servico;
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import infraestrutura.produto.entidade.Produto;
-import dominio.produto.servico.excecao.ProdutoInsercaoExcecao;
-import dominio.produto.servico.excecao.ProdutoInvalidoExcecao;
+import dominio.produto.excecao.ProdutoInsercaoExcecao;
+import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 
 import java.util.UUID;

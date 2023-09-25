@@ -1,4 +1,4 @@
-package dominio.produto.servico.excecao;
+package dominio.produto.excecao;
 
 public enum ProdutoInsercaoExcecao {
     NOME_VAZIO("Você deve inserir o nome do produto."),
