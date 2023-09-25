@@ -3,9 +3,9 @@ package aplicacao.produto.servlet;
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import com.google.gson.Gson;
-import dominio.produto.servico.ProdutoServico;
-import infraestrutura.ProdutoDAO;
-import dominio.produto.entidade.Produto;
+import dominio.produto.servico.ProdutoInsercaoServico;
+import infraestrutura.produto.dao.ProdutoDAO;
+import infraestrutura.produto.entidade.Produto;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -54,8 +54,8 @@ public class ProdutoControladora extends HttpServlet {
 
         ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
 
-        ProdutoServico produtoServico = new ProdutoServico();
-        ProdutoRetornoDto produtoRetornoDto = produtoServico.salvarNovoProduto(produtoDto);
+        ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
+        ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
 
         PrintWriter printWriter = resp.getWriter();
         printWriter.print(gson.toJson(produtoRetornoDto));
