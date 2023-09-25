@@ -1,4 +1,4 @@
-package infraestrutura;
+package infraestrutura.produto.dao;
 
 import infraestrutura.produto.conexao.GeradorConexao;
 import infraestrutura.produto.entidade.Produto;
