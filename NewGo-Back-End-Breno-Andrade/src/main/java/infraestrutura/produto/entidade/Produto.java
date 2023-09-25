@@ -1,4 +1,4 @@
-package dominio.produto.entidade;
+package infraestrutura.produto.entidade;
 
 import java.sql.Timestamp;
 import java.util.UUID;

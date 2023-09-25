@@ -2,7 +2,7 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
-import dominio.produto.entidade.Produto;
+import infraestrutura.produto.entidade.Produto;
 import dominio.produto.servico.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.servico.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.ProdutoDAO;

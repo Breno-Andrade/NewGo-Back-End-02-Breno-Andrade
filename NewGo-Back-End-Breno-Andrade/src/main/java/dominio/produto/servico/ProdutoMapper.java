@@ -2,7 +2,7 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
-import dominio.produto.entidade.Produto;
+import infraestrutura.produto.entidade.Produto;
 
 public class ProdutoMapper {
     public Produto insercaoDtoParaEntidade(ProdutoInsercaoDto produtoDto) {
