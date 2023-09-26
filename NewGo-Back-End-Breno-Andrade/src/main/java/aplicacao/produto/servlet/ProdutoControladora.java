@@ -73,6 +73,7 @@ public class ProdutoControladora extends HttpServlet {
         resp.setStatus(202);
 
         UUID produtoHash = UUID.fromString(req.getParameter("hash"));
+        boolean alterarLativo = Boolean.parseBoolean(req.getParameter("reativar"));
         StringBuffer stringBuffer = new StringBuffer();
 
         BufferedReader bufferedReader = req.getReader();
@@ -86,7 +87,7 @@ public class ProdutoControladora extends HttpServlet {
 
         PrintWriter printWriter = resp.getWriter();
         ProdutoAtualizacaoServico produtoServico = new ProdutoAtualizacaoServico();
-        printWriter.print(gson.toJson(produtoServico.atualizarProduto(produtoHash ,produtoDto)));
+        printWriter.print(gson.toJson(produtoServico.atualizarProduto(alterarLativo, produtoHash, produtoDto)));
         printWriter.flush();
     }
 

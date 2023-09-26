@@ -9,15 +9,19 @@ import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 import infraestrutura.produto.entidade.Produto;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class ProdutoAtualizacaoServico {
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
-    public ProdutoRetornoDto atualizarProduto(UUID hash, ProdutoAtualizacaoDto produtoDto){
+    public ProdutoRetornoDto atualizarProduto(boolean alterarLativo, UUID hash, ProdutoAtualizacaoDto produtoDto){
         Produto produtoTemp = produtoDAO.buscarPorHash(hash);
-        verificarLativo(produtoTemp);
+
+        if(!alterarLativo){
+            verificarLativo(produtoTemp);
+        }
         verificarModificacoesInvalidas(produtoDto, produtoTemp);
 
         Produto produto = produtoMapper.atualizacaoDtoParaEntidade(
@@ -27,6 +31,7 @@ public class ProdutoAtualizacaoServico {
                 produtoDto.getQuantidade(), produtoDto.getEstoque_min(),
                 produtoTemp.getDtcreate(), produtoTemp.getDtupdate(),
                 produtoTemp.isLativo());
+        produto.setLativo(true);
         produtoDAO.atualizarProduto(hash, produto);
 
         return produtoMapper.entidadeParaRetornoDto(produto);
