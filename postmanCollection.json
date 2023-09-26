@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "9d6754d2-d8af-474f-b524-7656c467f3e2",
+		"name": "NewGo Backend 02",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26296422"
+	},
+	"item": [
+		{
+			"name": "Get Produto",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base-url}}/produtos?hash=620f9817-496b-460e-a3f9-2b83ffb77ee5",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "620f9817-496b-460e-a3f9-2b83ffb77ee5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Produto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\": \"Caixa Pequena\",\r\n    \"descricao\": \"Kaira\",\r\n    \"ean13\": \"1236658880953\",\r\n    \"preco\": 200.20,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}"
+				},
+				"url": {
+					"raw": "{{base-url}}/produtos",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"produtos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Produto",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"descricao\": \"Caixa Grande e Azul\",\r\n    \"preco\": 200.20,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base-url}}/produtos?hash=cf122612-4d58-4cd1-b0df-5ff65b67af8a",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "cf122612-4d58-4cd1-b0df-5ff65b67af8a"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Produto",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base-url}}/produtos?hash=ad0b9957-d016-4ed6-b6d8-f3d04f27bbdc",
+					"host": [
+						"{{base-url}}"
+					],
+					"path": [
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "ad0b9957-d016-4ed6-b6d8-f3d04f27bbdc"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
