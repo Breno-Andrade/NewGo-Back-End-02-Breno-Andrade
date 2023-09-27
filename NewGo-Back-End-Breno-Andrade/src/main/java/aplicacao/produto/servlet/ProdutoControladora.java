@@ -104,12 +104,10 @@ public class ProdutoControladora extends HttpServlet {
         req.setCharacterEncoding("utf-8");
         resp.setStatus(202);
 
-        UUID produtoHash = UUID.fromString(req.getParameter("hash"));
+        UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
 
         BufferedReader bufferedReader = req.getReader();
         String prodResp = produtoDAO.excluirProduto(produtoHash);
-
-
 
         PrintWriter printWriter = resp.getWriter();
 
