@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.util.UUID;
 
 
-@WebServlet(name = "ProdutoControladora", urlPatterns = "/produtos")
+@WebServlet("/produtos/*")
 public class ProdutoControladora extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Gson gson = new Gson();
@@ -30,13 +30,18 @@ public class ProdutoControladora extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
-        resp.setStatus(200);
+        System.out.println(req.getPathInfo().replace("/", ""));
+        try{
+            PrintWriter printer = resp.getWriter();
 
-        PrintWriter printer = resp.getWriter();
-
-        UUID produtoHash = UUID.fromString(req.getParameter("hash"));
-        printer.print(gson.toJson(produtoDAO.buscarPorHash(produtoHash)));
-        printer.flush();
+            UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
+            System.out.println(produtoHash.toString());
+            printer.print(gson.toJson(produtoDAO.buscarPorHash(produtoHash)));
+            resp.setStatus(200);
+            printer.flush();
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
