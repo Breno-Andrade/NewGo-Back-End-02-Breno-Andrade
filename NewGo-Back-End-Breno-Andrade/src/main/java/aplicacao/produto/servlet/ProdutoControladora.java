@@ -32,10 +32,9 @@ public class ProdutoControladora extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
         System.out.println(req.getPathInfo().replace("/", ""));
         try{
-            PrintWriter printer = resp.getWriter();
-
             UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
-            System.out.println(produtoHash.toString());
+
+            PrintWriter printer = resp.getWriter();
             printer.print(gson.toJson(produtoDAO.buscarPorHash(produtoHash)));
             resp.setStatus(200);
             printer.flush();
@@ -75,10 +74,12 @@ public class ProdutoControladora extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         req.setCharacterEncoding("utf-8");
-        resp.setStatus(202);
 
-        UUID produtoHash = UUID.fromString(req.getParameter("hash"));
-        boolean alterarLativo = Boolean.parseBoolean(req.getParameter("reativar"));
+        UUID produtoHash = UUID.fromString(req.getPathInfo()
+                .replaceAll("\\?.*&.*", "")
+                .replace("/", ""));
+
+        boolean alterarLativo = Boolean.parseBoolean(req.getParameter("ativar"));
         StringBuffer stringBuffer = new StringBuffer();
 
         BufferedReader bufferedReader = req.getReader();
