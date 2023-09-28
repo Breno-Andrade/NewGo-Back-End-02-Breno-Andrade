@@ -6,6 +6,7 @@ import aplicacao.produto.dto.ProdutoRequisicaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import com.google.gson.Gson;
 import dominio.produto.excecao.ErroJson;
+import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.servico.ProdutoAtualizacaoServico;
 import dominio.produto.servico.ProdutoInsercaoServico;
 import dominio.produto.servico.ProdutoRequisicaoServico;
@@ -29,6 +30,33 @@ public class ProdutoControladora extends HttpServlet {
     ProdutoDAO produtoDAO = new ProdutoDAO();
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("utf-8");
+
+        try {
+            StringBuffer stringBuffer = new StringBuffer();
+            BufferedReader bufferedReader = req.getReader();
+            String atributos;
+
+            while((atributos = bufferedReader.readLine()) != null) {
+                stringBuffer.append(atributos);
+            }
+            ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
+            ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
+            ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
+
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.print(gson.toJson(produtoRetornoDto));
+            printWriter.flush();
+            resp.setStatus(201);
+        } catch (ProdutoInvalidoExcecao e){
+            resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
+            resp.setStatus(400);
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
@@ -46,32 +74,6 @@ public class ProdutoControladora extends HttpServlet {
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
             resp.setStatus(404);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("utf-8");
-        req.setCharacterEncoding("utf-8");
-
-        StringBuffer stringBuffer = new StringBuffer();
-
-        BufferedReader bufferedReader = req.getReader();
-        String atributos;
-
-        while((atributos = bufferedReader.readLine()) != null) {
-            stringBuffer.append(atributos);
-        }
-
-        ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
-
-        ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
-        ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
-
-        PrintWriter printWriter = resp.getWriter();
-        printWriter.print(gson.toJson(produtoRetornoDto));
-        printWriter.flush();
-        resp.setStatus(201);
     }
 
     @Override

@@ -44,37 +44,37 @@ public class ProdutoInsercaoServico {
         estoqueMinNegativo(produtoDto.getEstoque_min());
     }
 
-    public void nomeDuplicado(String nome){
+    public void nomeDuplicado(String nome) throws ProdutoInvalidoExcecao{
         if (produtoDAO.existeNome(nome)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.NOME_DUPLICADO);
         }
     }
 
-    public void nomeVazio(String nome){
+    public void nomeVazio(String nome) throws ProdutoInvalidoExcecao{
         if (nome.trim().isEmpty()){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.NOME_VAZIO);
         }
     }
 
-    public void ean13Duplicado(String ean13){
+    public void ean13Duplicado(String ean13) throws ProdutoInvalidoExcecao{
         if (produtoDAO.existeEan13(ean13)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.EAN13_DUPLICADO);
         }
     }
 
-    public void precoNegativo(double preco){
+    public void precoNegativo(double preco) throws ProdutoInvalidoExcecao{
         if (doubleNegativo(preco)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.PRECO_NEGATIVO);
         }
     }
 
-    public void quantidadeNegativo(double quantidade){
+    public void quantidadeNegativo(double quantidade) throws ProdutoInvalidoExcecao{
         if (doubleNegativo(quantidade)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.QUANTIDADE_NEGATIVA);
         }
     }
 
-    public void estoqueMinNegativo(double estoqueMin){
+    public void estoqueMinNegativo(double estoqueMin) throws ProdutoInvalidoExcecao{
         if (doubleNegativo(estoqueMin)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.ESTOQUE_MIN_NEGATIVO);
         }
