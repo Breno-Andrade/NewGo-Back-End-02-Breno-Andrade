@@ -2,12 +2,14 @@ package aplicacao.produto.servlet;
 
 import aplicacao.produto.dto.ProdutoAtualizacaoDto;
 import aplicacao.produto.dto.ProdutoInsercaoDto;
+import aplicacao.produto.dto.ProdutoRequisicaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import com.google.gson.Gson;
+import dominio.produto.excecao.ErroJson;
 import dominio.produto.servico.ProdutoAtualizacaoServico;
 import dominio.produto.servico.ProdutoInsercaoServico;
+import dominio.produto.servico.ProdutoRequisicaoServico;
 import infraestrutura.produto.dao.ProdutoDAO;
-import infraestrutura.produto.entidade.Produto;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,16 +32,19 @@ public class ProdutoControladora extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
-        System.out.println(req.getPathInfo().replace("/", ""));
         try{
-            UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
+            ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(
+                    UUID.fromString(req.getPathInfo().replaceAll("/", ""))
+            );
 
+            ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
             PrintWriter printer = resp.getWriter();
-            printer.print(gson.toJson(produtoDAO.buscarPorHash(produtoHash)));
+            printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
             resp.setStatus(200);
             printer.flush();
-        } catch (Exception e){
-            throw new RuntimeException(e);
+        } catch (RuntimeException e){
+            resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
+            resp.setStatus(404);
         }
     }
 
