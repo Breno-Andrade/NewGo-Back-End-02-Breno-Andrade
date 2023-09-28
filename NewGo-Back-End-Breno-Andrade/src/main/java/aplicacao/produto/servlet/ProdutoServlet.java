@@ -24,7 +24,7 @@ import java.util.UUID;
 
 
 @WebServlet("/produtos/*")
-public class ProdutoControladora extends HttpServlet {
+public class ProdutoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Gson gson = new Gson();
     ProdutoDAO produtoDAO = new ProdutoDAO();
