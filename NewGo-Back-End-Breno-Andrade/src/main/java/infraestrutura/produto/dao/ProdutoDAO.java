@@ -148,6 +148,7 @@ public class ProdutoDAO {
             comandoComConexao.setObject(5, hash);
 
             int linhasAfetadas = comandoComConexao.executeUpdate();
+            comandoComConexao.
 
             if (linhasAfetadas == 0) {
                 throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
@@ -158,6 +159,19 @@ public class ProdutoDAO {
             throw new RuntimeException(ex);
         }
         return produto;
+    }
+
+    public void alterarLativo(UUID hash, boolean lativo){
+        String sql = "UPDATE produto SET lativo = ? WHERE hash = ?";
+        try {
+            PreparedStatement comandoComConexao = conexao.prepareStatement(sql);
+            comandoComConexao.setBoolean(1, lativo);
+            comandoComConexao.setObject(2, hash);
+
+            comandoComConexao.executeUpdate();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public String excluirProduto(UUID hash) {

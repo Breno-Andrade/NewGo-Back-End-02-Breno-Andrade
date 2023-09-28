@@ -10,6 +10,7 @@ import infraestrutura.produto.dao.ProdutoDAO;
 import java.util.UUID;
 
 public class ProdutoInsercaoServico {
+    private ProdutoServico produtoServico = new ProdutoServico();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper conversorProduto = new ProdutoMapper();
 
@@ -39,12 +40,12 @@ public class ProdutoInsercaoServico {
         nomeDuplicado(produtoDto.getNome());
         nomeVazio(produtoDto.getNome());
         ean13Duplicado(produtoDto.getEan13());
-        precoNegativo(produtoDto.getPreco());
-        quantidadeNegativo(produtoDto.getQuantidade());
-        estoqueMinNegativo(produtoDto.getEstoque_min());
+        produtoServico.precoNegativo(produtoDto.getPreco());
+        produtoServico.quantidadeNegativo(produtoDto.getQuantidade());
+        produtoServico.estoqueMinNegativo(produtoDto.getEstoque_min());
     }
 
-    public void nomeDuplicado(String nome) throws ProdutoInvalidoExcecao{
+    public void nomeDuplicado(String nome) throws ProdutoInvalidoExcecao {
         if (produtoDAO.existeNome(nome)){
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.NOME_DUPLICADO);
         }
@@ -61,27 +62,4 @@ public class ProdutoInsercaoServico {
             throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.EAN13_DUPLICADO);
         }
     }
-
-    public void precoNegativo(double preco) throws ProdutoInvalidoExcecao{
-        if (doubleNegativo(preco)){
-            throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.PRECO_NEGATIVO);
-        }
-    }
-
-    public void quantidadeNegativo(double quantidade) throws ProdutoInvalidoExcecao{
-        if (doubleNegativo(quantidade)){
-            throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.QUANTIDADE_NEGATIVA);
-        }
-    }
-
-    public void estoqueMinNegativo(double estoqueMin) throws ProdutoInvalidoExcecao{
-        if (doubleNegativo(estoqueMin)){
-            throw new ProdutoInvalidoExcecao(ProdutoInsercaoExcecao.ESTOQUE_MIN_NEGATIVO);
-        }
-    }
-
-    public boolean doubleNegativo(double valor){
-        return valor < 0.0;
-    }
-
 }

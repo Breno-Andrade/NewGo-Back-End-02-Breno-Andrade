@@ -1,18 +1,16 @@
 package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoAtualizacaoDto;
-import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import dominio.produto.excecao.ProdutoAtualizacaoExcecao;
-import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 import infraestrutura.produto.entidade.Produto;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 public class ProdutoAtualizacaoServico {
+    private ProdutoServico produtoServico = new ProdutoServico();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
@@ -22,61 +20,59 @@ public class ProdutoAtualizacaoServico {
         if(!alterarLativo){
             verificarLativo(produtoTemp);
         }
-        verificarModificacoesInvalidas(produtoDto, produtoTemp);
+        verificacaoModificacoesInvalidas(produtoDto, produtoTemp);
 
-        Produto produto = produtoMapper.atualizacaoDtoParaEntidade(
-                produtoTemp.getId(), produtoTemp.getHash(),
-                produtoTemp.getNome(), produtoDto.getDescricao(),
-                produtoTemp.getEan13(), produtoDto.getPreco(),
-                produtoDto.getQuantidade(), produtoDto.getEstoque_min(),
-                produtoTemp.getDtcreate(), produtoTemp.getDtupdate(),
-                produtoTemp.isLativo());
-        produto.setLativo(true);
+        Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoTemp, produtoDto);
+        produtoDAO.alterarLativo(hash, true);
         produtoDAO.atualizarProduto(hash, produto);
 
+        produto = produtoDAO.buscarPorHash(hash);
         return produtoMapper.entidadeParaRetornoDto(produto);
     }
 
-    public void verificarModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
-        verificarId(produtoDto, produto);
-        verificarHash(produtoDto, produto);
-        verificarNome(produtoDto, produto);
-        verificarEan13(produtoDto, produto);
-        verificarDtcreate(produtoDto, produto);
-        verificarDtupdate(produtoDto, produto);
+    public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
+        produtoServico.precoNegativo(produtoDto.getPreco());
+        produtoServico.quantidadeNegativo(produtoDto.getQuantidade());
+        produtoServico.estoqueMinNegativo(produtoDto.getEstoque_min());
+        verificarAlteracaoId(produtoDto, produto);
+        verificarAlteracaoHash(produtoDto, produto);
+        verificarAlteracaoNome(produtoDto, produto);
+        verificarAlteracaoEan13(produtoDto, produto);
+        verificarAlteracaoDtcreate(produtoDto, produto);
+        verificarAlteracaoDtupdate(produtoDto, produto);
     }
 
-    public void verificarId(ProdutoAtualizacaoDto produtoDto, Produto produto){
+    public void verificarAlteracaoId(ProdutoAtualizacaoDto produtoDto, Produto produto){
         if (produtoDto.getId() != 0 && produtoDto.getId() != produto.getId()){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.ID_INVALIDO);
         }
     }
 
-    public void verificarHash(ProdutoAtualizacaoDto produtoDto, Produto produto){
+    public void verificarAlteracaoHash(ProdutoAtualizacaoDto produtoDto, Produto produto){
         if (produtoDto.getHash() != null && produtoDto.getHash() != produto.getHash()){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.HASH_INVALIDO);
         }
     }
 
-    public void verificarNome(ProdutoAtualizacaoDto produtoDto , Produto produto){
+    public void verificarAlteracaoNome(ProdutoAtualizacaoDto produtoDto , Produto produto){
         if (produtoDto.getNome() != null && !produtoDto.getNome().equals(produto.getNome())){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.NOME_INVALIDO);
         }
     }
 
-    public void verificarEan13(ProdutoAtualizacaoDto produtoDto , Produto produto){
+    public void verificarAlteracaoEan13(ProdutoAtualizacaoDto produtoDto , Produto produto){
         if (produtoDto.getEan13() != null && !produtoDto.getEan13().equals(produto.getEan13())){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.EAN13_INVALIDO);
         }
     }
 
-    public void verificarDtcreate(ProdutoAtualizacaoDto produtoDto , Produto produto){
+    public void verificarAlteracaoDtcreate(ProdutoAtualizacaoDto produtoDto , Produto produto){
         if (produtoDto.getDtcreate() != null && produtoDto.getDtcreate() != produto.getDtcreate()){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.DTCREATE_INVALIDO);
         }
     }
 
-    public void verificarDtupdate(ProdutoAtualizacaoDto produtoDto , Produto produto){
+    public void verificarAlteracaoDtupdate(ProdutoAtualizacaoDto produtoDto , Produto produto){
         if (produtoDto.getDtupdate() != null && produtoDto.getDtupdate() != produto.getDtupdate()){
             throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.DTUPDATE_INVALIDO);
         }
