@@ -68,8 +68,8 @@ public class ProdutoControladora extends HttpServlet {
             ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
             PrintWriter printer = resp.getWriter();
             printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
-            resp.setStatus(200);
             printer.flush();
+            resp.setStatus(200);
         } catch (RuntimeException e){
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
             resp.setStatus(404);
@@ -81,7 +81,7 @@ public class ProdutoControladora extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         req.setCharacterEncoding("utf-8");
-
+        try {
         UUID produtoHash = UUID.fromString(req.getPathInfo()
                 .replaceAll("\\?.*&.*", "")
                 .replace("/", ""));
@@ -102,6 +102,12 @@ public class ProdutoControladora extends HttpServlet {
         ProdutoAtualizacaoServico produtoServico = new ProdutoAtualizacaoServico();
         printWriter.print(gson.toJson(produtoServico.atualizarProduto(alterarLativo, produtoHash, produtoDto)));
         printWriter.flush();
+        resp.setStatus(202);
+        } catch(ProdutoInvalidoExcecao e){
+            resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
+            resp.setStatus(404);
+        }
+
     }
 
     @Override
@@ -109,22 +115,18 @@ public class ProdutoControladora extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         req.setCharacterEncoding("utf-8");
-        resp.setStatus(202);
 
-        UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
+        try {
+            UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
 
-        BufferedReader bufferedReader = req.getReader();
-        String prodResp = produtoDAO.excluirProduto(produtoHash);
+            BufferedReader bufferedReader = req.getReader();
+            String prodResp = produtoDAO.excluirProduto(produtoHash);
 
-        PrintWriter printWriter = resp.getWriter();
-
-        if(prodResp == null) {
+            PrintWriter printWriter = resp.getWriter();
+            resp.setStatus(202);
+        } catch (ProdutoInvalidoExcecao e) {
+            resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
             resp.setStatus(404);
-            printWriter.print("Produto não foi encontrado.");
-            printWriter.flush();
-        } else {
-            printWriter.print(prodResp);
-            printWriter.flush();
         }
     }
 }
