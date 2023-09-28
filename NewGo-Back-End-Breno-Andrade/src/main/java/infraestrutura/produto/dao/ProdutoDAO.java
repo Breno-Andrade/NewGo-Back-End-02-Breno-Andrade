@@ -148,7 +148,6 @@ public class ProdutoDAO {
             comandoComConexao.setObject(5, hash);
 
             int linhasAfetadas = comandoComConexao.executeUpdate();
-            comandoComConexao.
 
             if (linhasAfetadas == 0) {
                 throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
