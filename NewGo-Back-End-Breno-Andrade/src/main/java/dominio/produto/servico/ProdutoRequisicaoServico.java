@@ -13,13 +13,9 @@ public class ProdutoRequisicaoServico{
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
     public ProdutoRetornoDto requisitarProduto(ProdutoRequisicaoDto produtoDto){
-        try{
-            verificarHash(produtoDto.getHash());
+        verificarHash(produtoDto.getHash());
 
-            return produtoMapper.entidadeParaRetornoDto(produtoDAO.buscarPorHash(produtoDto.getHash()));
-        } catch (ProdutoInvalidoExcecao e){
-            throw new ProdutoInvalidoExcecao(ProdutoRequisicaoExcecao.PRODUTO_NAO_ENCONTRADO);
-        }
+        return produtoMapper.entidadeParaRetornoDto(produtoDAO.buscarPorHash(produtoDto.getHash()));
     }
 
     public void verificarHash(UUID hash) throws ProdutoInvalidoExcecao{
