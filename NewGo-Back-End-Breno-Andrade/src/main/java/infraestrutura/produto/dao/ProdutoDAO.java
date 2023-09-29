@@ -14,8 +14,8 @@ public class ProdutoDAO {
 
     public Produto inserirNovoProduto(Produto produto) {
         try {
-            String insertSql = "INSERT INTO produto (hash, nome, descricao, ean13, preco, quantidade, estoque_min)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insertSql = "INSERT INTO produto (hash, nome, descricao, ean13, preco, quantidade, estoque_min, dtcreate, lativo)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
@@ -26,6 +26,8 @@ public class ProdutoDAO {
             comandoComConexao.setDouble(5, produto.getPreco());
             comandoComConexao.setDouble(6, produto.getQuantidade());
             comandoComConexao.setDouble(7, produto.getEstoque_min());
+            comandoComConexao.setObject(8, produto.getDtcreate());
+            comandoComConexao.setBoolean(9, produto.isLativo());
 
             comandoComConexao.executeUpdate();
 
@@ -33,8 +35,6 @@ public class ProdutoDAO {
             resultadoOperacao.next();
 
             produto.setId(resultadoOperacao.getLong("id"));
-            produto.setDtcreate(resultadoOperacao.getTimestamp("dtcreate"));
-            produto.setLativo(resultadoOperacao.getBoolean("lativo"));
 
             comandoComConexao.close();
             resultadoOperacao.close();
@@ -147,12 +147,6 @@ public class ProdutoDAO {
             comandoComConexao.setDouble(4, produto.getEstoque_min());
             comandoComConexao.setObject(5, hash);
 
-            int linhasAfetadas = comandoComConexao.executeUpdate();
-
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
-            }
-
             comandoComConexao.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -181,11 +175,6 @@ public class ProdutoDAO {
 
             comandoComConexao.setObject(1, hash);
 
-            int linhasAfetadas = comandoComConexao.executeUpdate();
-
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum registro excluído. Verifique o ID do produto.");
-            }
             comandoComConexao.close();
             return "Produto excluido com sucesso.";
         } catch (SQLException ex) {

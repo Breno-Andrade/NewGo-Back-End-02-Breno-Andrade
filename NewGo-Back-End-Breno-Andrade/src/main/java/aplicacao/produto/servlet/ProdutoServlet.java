@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.servico.ProdutoAtualizacaoServico;
+import dominio.produto.servico.ProdutoExclusaoServico;
 import dominio.produto.servico.ProdutoInsercaoServico;
 import dominio.produto.servico.ProdutoRequisicaoServico;
 import infraestrutura.produto.dao.ProdutoDAO;
@@ -27,7 +28,6 @@ import java.util.UUID;
 public class ProdutoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Gson gson = new Gson();
-    ProdutoDAO produtoDAO = new ProdutoDAO();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -70,7 +70,7 @@ public class ProdutoServlet extends HttpServlet {
             printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
             printer.flush();
             resp.setStatus(200);
-        } catch (RuntimeException e){
+        } catch (ProdutoInvalidoExcecao e){
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
             resp.setStatus(404);
         }
@@ -122,12 +122,13 @@ public class ProdutoServlet extends HttpServlet {
         req.setCharacterEncoding("utf-8");
 
         try {
-            UUID produtoHash = UUID.fromString(req.getPathInfo().replaceAll("/", ""));
+            ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(
+                    UUID.fromString(req.getPathInfo().replaceAll("/", ""))
+            );
 
-            BufferedReader bufferedReader = req.getReader();
-            String prodResp = produtoDAO.excluirProduto(produtoHash);
+            ProdutoExclusaoServico produtoServico = new ProdutoExclusaoServico();
+            produtoServico.excluirProduto(produtoDto);
 
-            PrintWriter printWriter = resp.getWriter();
             resp.setStatus(202);
         } catch (ProdutoInvalidoExcecao e) {
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
