@@ -1,64 +1,63 @@
 {
 	"info": {
 		"_postman_id": "9d6754d2-d8af-474f-b524-7656c467f3e2",
-		"name": "NewGo Backend 02 - Produtos",
+		"name": "NewGo Backend 02",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26296422"
 	},
 	"item": [
 		{
-			"name": "Consulta Individual por Hash",
+			"name": "Get Produto",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base-url}}/{{recurso}}/d5ec7d5d-f06c-49db-b73e-f1355c3b5bd",
+					"raw": "{{base-url}}/produtos?hash=620f9817-496b-460e-a3f9-2b83ffb77ee5",
 					"host": [
 						"{{base-url}}"
 					],
 					"path": [
-						"{{recurso}}",
-						"d5ec7d5d-f06c-49db-b73e-f1355c3b5bd"
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "620f9817-496b-460e-a3f9-2b83ffb77ee5"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Postagem Individual",
+			"name": "Post Produto",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome\": \" \",\r\n    \"descricao\": \"Produto F\",\r\n    \"ean13\": \"6044425358905\",\r\n    \"preco\": 3,\r\n    \"quantidade\": 10.0,\r\n    \"estoque_min\": 10.2\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"raw": "{\r\n    \"nome\": \"Caixa Pequena\",\r\n    \"descricao\": \"Kaira\",\r\n    \"ean13\": \"1236658880953\",\r\n    \"preco\": 200.20,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}"
 				},
 				"url": {
-					"raw": "{{base-url}}/{{recurso}}/",
+					"raw": "{{base-url}}/produtos",
 					"host": [
 						"{{base-url}}"
 					],
 					"path": [
-						"{{recurso}}",
-						""
+						"produtos"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Atualizacao Individual por Hash",
+			"name": "Put Produto",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"descricao\": \"ativado\",\r\n    \"preco\": 800.00,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}",
+					"raw": "{\r\n    \"descricao\": \"Caixa Grande e Azul\",\r\n    \"preco\": 200.20,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -66,68 +65,45 @@
 					}
 				},
 				"url": {
-					"raw": "{{base-url}}/{{recurso}}/1ce22eec-24e0-470f-aff9-1185ce3ab7df/ativar",
+					"raw": "{{base-url}}/produtos?hash=cf122612-4d58-4cd1-b0df-5ff65b67af8a",
 					"host": [
 						"{{base-url}}"
 					],
 					"path": [
-						"{{recurso}}",
-						"1ce22eec-24e0-470f-aff9-1185ce3ab7df",
-						"ativar"
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "cf122612-4d58-4cd1-b0df-5ff65b67af8a"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Exclusao Individual por Hash",
+			"name": "Delete Produto",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base-url}}/{{recurso}}/3a431aa7-441f-44f8-9eed-584d52520db",
+					"raw": "{{base-url}}/produtos?hash=ad0b9957-d016-4ed6-b6d8-f3d04f27bbdc",
 					"host": [
 						"{{base-url}}"
 					],
 					"path": [
-						"{{recurso}}",
-						"3a431aa7-441f-44f8-9eed-584d52520db"
+						"produtos"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "ad0b9957-d016-4ed6-b6d8-f3d04f27bbdc"
+						}
 					]
 				}
 			},
 			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "base-url",
-			"value": "http://localhost:8080/NewGo_Backend_02_war",
-			"type": "string"
-		},
-		{
-			"key": "recurso",
-			"value": "produtos",
-			"type": "string"
 		}
 	]
 }

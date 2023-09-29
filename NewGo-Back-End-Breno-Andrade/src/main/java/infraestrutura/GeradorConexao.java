@@ -1,4 +1,4 @@
-package infraestrutura.produto.conexao;
+package infraestrutura;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
