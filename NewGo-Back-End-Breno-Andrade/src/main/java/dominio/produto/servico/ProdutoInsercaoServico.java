@@ -6,7 +6,6 @@ import infraestrutura.produto.entidade.Produto;
 import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
-
 import java.util.UUID;
 
 public class ProdutoInsercaoServico {
@@ -22,10 +21,9 @@ public class ProdutoInsercaoServico {
 
         Produto novoProduto = conversorProduto.insercaoDtoParaEntidade(produtoInsercaoDto);
         novoProduto.setHash(gerarHashUnico());
+        novoProduto.setDtcreate(produtoServico.gerarTimestampAtual());
 
-        Produto produtoSalvo = produtoDAO.inserirNovoProduto(novoProduto);
-
-        return conversorProduto.entidadeParaRetornoDto(produtoSalvo);
+        return conversorProduto.entidadeParaRetornoDto(produtoDAO.inserirNovoProduto(novoProduto));
     }
 
     public UUID gerarHashUnico(){
