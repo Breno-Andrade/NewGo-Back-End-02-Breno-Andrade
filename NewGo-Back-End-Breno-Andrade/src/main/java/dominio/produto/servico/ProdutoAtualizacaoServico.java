@@ -15,6 +15,7 @@ public class ProdutoAtualizacaoServico {
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
     public ProdutoRetornoDto atualizarProduto(boolean alterarLativo, UUID hash, ProdutoAtualizacaoDto produtoDto){
+        produtoServico.verificarHash(hash);
         Produto produtoTemp = produtoDAO.buscarPorHash(hash);
 
         if(!alterarLativo){
@@ -22,7 +23,7 @@ public class ProdutoAtualizacaoServico {
         }
         verificacaoModificacoesInvalidas(produtoDto, produtoTemp);
 
-        Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoTemp, produtoDto);
+        Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoDto, produtoTemp);
         produtoDAO.alterarLativo(hash, true);
         produtoDAO.atualizarProduto(hash, produto);
 

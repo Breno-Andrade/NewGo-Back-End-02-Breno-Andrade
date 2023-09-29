@@ -2,10 +2,26 @@ package dominio.produto.servico;
 
 import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
+import dominio.produto.excecao.ProdutoRequisicaoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
+
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
 public class ProdutoServico {
     private ProdutoDAO produtoDAO = new ProdutoDAO();
+
+    public void verificarHash(UUID hash) throws ProdutoInvalidoExcecao{
+        if(!produtoDAO.existeHash(hash)){
+            throw new ProdutoInvalidoExcecao(ProdutoRequisicaoExcecao.PRODUTO_NAO_ENCONTRADO);
+        }
+    }
+
+    public Timestamp gerarTimestampAtual(){
+        return Timestamp.from(ZonedDateTime.now(ZoneId.systemDefault()).toInstant());
+    }
 
     public void precoNegativo(double preco) throws ProdutoInvalidoExcecao{
         if (doubleNegativo(preco)){

@@ -22,19 +22,19 @@ public class ProdutoMapper {
         );
     }
 
-    public Produto atualizacaoDtoParaEntidade(Produto produto, ProdutoAtualizacaoDto produtoDto){
+    public Produto atualizacaoDtoParaEntidade(ProdutoAtualizacaoDto produtoDto, Produto informacoesBanco){
         return new Produto(
-                produto.getId(),
-                produto.getHash(),
-                produto.getNome(),
+                informacoesBanco.getId(),
+                informacoesBanco.getHash(),
+                informacoesBanco.getNome(),
                 produtoDto.getDescricao(),
-                produto.getEan13(),
+                informacoesBanco.getEan13(),
                 produtoDto.getPreco(),
                 produtoDto.getQuantidade(),
                 produtoDto.getEstoque_min(),
-                produto.getDtcreate(),
-                produto.getDtupdate(),
-                produto.isLativo()
+                informacoesBanco.getDtcreate(),
+                informacoesBanco.getDtupdate(),
+                informacoesBanco.isLativo()
         );
     }
 
