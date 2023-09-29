@@ -1,6 +1,7 @@
-package infraestrutura;
+package infraestrutura.produto.dao;
 
-import dominio.produto.entidade.Produto;
+import infraestrutura.produto.conexao.GeradorConexao;
+import infraestrutura.produto.entidade.Produto;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,27 +14,27 @@ public class ProdutoDAO {
 
     public Produto inserirNovoProduto(Produto produto) {
         try {
-            String insertSql = "INSERT INTO produto (nome, descricao, ean13, preco, quantidade, estoque_min)" +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            String insertSql = "INSERT INTO produto (hash, nome, descricao, ean13, preco, quantidade, estoque_min, dtcreate, lativo)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
-            comandoComConexao.setString(1, produto.getNome());
-            comandoComConexao.setString(2, produto.getDescricao());
-            comandoComConexao.setString(3, produto.getEan13());
-            comandoComConexao.setDouble(4, produto.getPreco());
-            comandoComConexao.setDouble(5, produto.getQuantidade());
-            comandoComConexao.setDouble(6, produto.getEstoque_min());
+            comandoComConexao.setObject(1, produto.getHash());
+            comandoComConexao.setString(2, produto.getNome());
+            comandoComConexao.setString(3, produto.getDescricao());
+            comandoComConexao.setString(4, produto.getEan13());
+            comandoComConexao.setDouble(5, produto.getPreco());
+            comandoComConexao.setDouble(6, produto.getQuantidade());
+            comandoComConexao.setDouble(7, produto.getEstoque_min());
+            comandoComConexao.setObject(8, produto.getDtcreate());
+            comandoComConexao.setBoolean(9, produto.isLativo());
 
             comandoComConexao.executeUpdate();
 
             ResultSet resultadoOperacao = comandoComConexao.getGeneratedKeys();
             resultadoOperacao.next();
 
-            Long idGerado = resultadoOperacao.getLong("id");
-            produto.setId(idGerado);
-            String hashGerado = resultadoOperacao.getString("hash");
-            produto.setHash(UUID.fromString(hashGerado));
+            produto.setId(resultadoOperacao.getLong("id"));
 
             comandoComConexao.close();
             resultadoOperacao.close();
@@ -116,6 +117,24 @@ public class ProdutoDAO {
         return buscarProduto(hash, selectSql);
     }
 
+    public boolean existeHash(UUID hash){
+        String selectSql = "SELECT * FROM produto WHERE hash = ?";
+
+        return buscarProduto(hash, selectSql) != null;
+    }
+
+    public boolean existeNome(String nome){
+        String selectSql = "SELECT * FROM produto WHERE nome = ?";
+
+        return buscarProduto(nome, selectSql) != null;
+    }
+
+    public boolean existeEan13(String ean13){
+        String selectSql = "SELECT * FROM produto WHERE ean13 = ?";
+
+        return buscarProduto(ean13, selectSql) != null;
+    }
+
     public Produto atualizarProduto(UUID hash, Produto produto) {
         try {
             String updateSql = "UPDATE produto SET descricao = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
@@ -128,17 +147,24 @@ public class ProdutoDAO {
             comandoComConexao.setDouble(4, produto.getEstoque_min());
             comandoComConexao.setObject(5, hash);
 
-            int linhasAfetadas = comandoComConexao.executeUpdate();
-
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum registro atualizado. Verifique o ID do produto.");
-            }
-
             comandoComConexao.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
         return produto;
+    }
+
+    public void alterarLativo(UUID hash, boolean lativo){
+        String sql = "UPDATE produto SET lativo = ? WHERE hash = ?";
+        try {
+            PreparedStatement comandoComConexao = conexao.prepareStatement(sql);
+            comandoComConexao.setBoolean(1, lativo);
+            comandoComConexao.setObject(2, hash);
+
+            comandoComConexao.executeUpdate();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public String excluirProduto(UUID hash) {
@@ -149,11 +175,6 @@ public class ProdutoDAO {
 
             comandoComConexao.setObject(1, hash);
 
-            int linhasAfetadas = comandoComConexao.executeUpdate();
-
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum registro excluído. Verifique o ID do produto.");
-            }
             comandoComConexao.close();
             return "Produto excluido com sucesso.";
         } catch (SQLException ex) {
