@@ -9,7 +9,7 @@ import infraestrutura.produto.dao.ProdutoDAO;
 import java.util.UUID;
 
 public class ProdutoInsercaoServico {
-    private ProdutoServico produtoServico = new ProdutoServico();
+    private UtilProduto utilProduto = new UtilProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper conversorProduto = new ProdutoMapper();
 
@@ -21,7 +21,7 @@ public class ProdutoInsercaoServico {
 
         Produto novoProduto = conversorProduto.insercaoDtoParaEntidade(produtoInsercaoDto);
         novoProduto.setHash(gerarHashUnico());
-        novoProduto.setDtcreate(produtoServico.gerarTimestampAtual());
+        novoProduto.setDtcreate(utilProduto.gerarTimestampAtual());
 
         return conversorProduto.entidadeParaRetornoDto(produtoDAO.inserirNovoProduto(novoProduto));
     }
@@ -38,9 +38,9 @@ public class ProdutoInsercaoServico {
         nomeDuplicado(produtoDto.getNome());
         nomeVazio(produtoDto.getNome());
         ean13Duplicado(produtoDto.getEan13());
-        produtoServico.precoNegativo(produtoDto.getPreco());
-        produtoServico.quantidadeNegativo(produtoDto.getQuantidade());
-        produtoServico.estoqueMinNegativo(produtoDto.getEstoque_min());
+        utilProduto.precoNegativo(produtoDto.getPreco());
+        utilProduto.quantidadeNegativo(produtoDto.getQuantidade());
+        utilProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
     }
 
     public void nomeDuplicado(String nome) throws ProdutoInvalidoExcecao {

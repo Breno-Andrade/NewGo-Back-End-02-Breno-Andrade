@@ -10,7 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-public class ProdutoServico {
+public class UtilProduto {
     private ProdutoDAO produtoDAO = new ProdutoDAO();
 
     public void verificarHash(UUID hash) throws ProdutoInvalidoExcecao{
