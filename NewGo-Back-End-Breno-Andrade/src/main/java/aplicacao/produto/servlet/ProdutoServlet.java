@@ -127,8 +127,9 @@ public class ProdutoServlet extends HttpServlet {
             );
 
             ProdutoExclusaoServico produtoServico = new ProdutoExclusaoServico();
-            produtoServico.excluirProduto(produtoDto);
-
+            PrintWriter printer = resp.getWriter();
+            printer.print(gson.toJson(produtoServico.excluirProduto(produtoDto)));
+            printer.flush();
             resp.setStatus(202);
         } catch (ProdutoInvalidoExcecao e) {
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="NewGo-Backend-02:war">
+    <output-path>$PROJECT_DIR$/NewGo-Back-End-Breno-Andrade/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>NewGo-Backend-02</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="NewGo-Backend-02.war">
+      <element id="artifact" artifact-name="NewGo-Backend-02:war exploded" />
+    </root>
+  </artifact>
+</component>
