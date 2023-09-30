@@ -137,7 +137,7 @@ public class ProdutoDAO {
 
     public Produto atualizarProduto(UUID hash, Produto produto) {
         try {
-            String updateSql = "UPDATE produto SET descricao = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
+            String updateSql = "UPDATE produto SET descricao = ?, preco = ?, quantidade = ?, estoque_min = ?, dtupdate = ? WHERE hash = ?";
 
             PreparedStatement comandoComConexao = conexao.prepareStatement(updateSql);
 
@@ -145,8 +145,10 @@ public class ProdutoDAO {
             comandoComConexao.setDouble(2, produto.getPreco());
             comandoComConexao.setDouble(3, produto.getQuantidade());
             comandoComConexao.setDouble(4, produto.getEstoque_min());
-            comandoComConexao.setObject(5, hash);
+            comandoComConexao.setTimestamp(5, produto.getDtupdate());
+            comandoComConexao.setObject(6, hash);
 
+            comandoComConexao.executeUpdate();
             comandoComConexao.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -162,6 +164,7 @@ public class ProdutoDAO {
             comandoComConexao.setObject(2, hash);
 
             comandoComConexao.executeUpdate();
+            comandoComConexao.close();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -175,6 +178,7 @@ public class ProdutoDAO {
 
             comandoComConexao.setObject(1, hash);
 
+            comandoComConexao.executeUpdate();
             comandoComConexao.close();
             return "Produto excluido com sucesso.";
         } catch (SQLException ex) {

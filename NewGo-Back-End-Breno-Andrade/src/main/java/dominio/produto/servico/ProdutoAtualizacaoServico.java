@@ -10,12 +10,12 @@ import infraestrutura.produto.entidade.Produto;
 import java.util.UUID;
 
 public class ProdutoAtualizacaoServico {
-    private ProdutoServico produtoServico = new ProdutoServico();
+    private UtilProduto utilProduto = new UtilProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
     public ProdutoRetornoDto atualizarProduto(boolean alterarLativo, UUID hash, ProdutoAtualizacaoDto produtoDto){
-        produtoServico.verificarHash(hash);
+        utilProduto.verificarHash(hash);
         Produto produtoTemp = produtoDAO.buscarPorHash(hash);
 
         if(!alterarLativo){
@@ -24,17 +24,18 @@ public class ProdutoAtualizacaoServico {
         verificacaoModificacoesInvalidas(produtoDto, produtoTemp);
 
         Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoDto, produtoTemp);
+        produto.setDtupdate(utilProduto.gerarTimestampAtual());
         produtoDAO.alterarLativo(hash, true);
-        produtoDAO.atualizarProduto(hash, produto);
 
-        produto = produtoDAO.buscarPorHash(hash);
-        return produtoMapper.entidadeParaRetornoDto(produto);
+//
+//        produto = produtoDAO.buscarPorHash(hash);
+        return produtoMapper.entidadeParaRetornoDto(produtoDAO.atualizarProduto(hash, produto));
     }
 
     public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
-        produtoServico.precoNegativo(produtoDto.getPreco());
-        produtoServico.quantidadeNegativo(produtoDto.getQuantidade());
-        produtoServico.estoqueMinNegativo(produtoDto.getEstoque_min());
+        utilProduto.precoNegativo(produtoDto.getPreco());
+        utilProduto.quantidadeNegativo(produtoDto.getQuantidade());
+        utilProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
         verificarAlteracaoId(produtoDto, produto);
         verificarAlteracaoHash(produtoDto, produto);
         verificarAlteracaoNome(produtoDto, produto);
