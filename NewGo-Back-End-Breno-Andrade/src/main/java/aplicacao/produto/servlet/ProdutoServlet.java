@@ -1,16 +1,10 @@
 package aplicacao.produto.servlet;
 
-import aplicacao.produto.dto.ProdutoAtualizacaoDto;
-import aplicacao.produto.dto.ProdutoInsercaoDto;
-import aplicacao.produto.dto.ProdutoRequisicaoDto;
-import aplicacao.produto.dto.ProdutoRetornoDto;
+import aplicacao.produto.dto.*;
 import com.google.gson.Gson;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
-import dominio.produto.servico.ProdutoAtualizacaoServico;
-import dominio.produto.servico.ProdutoExclusaoServico;
-import dominio.produto.servico.ProdutoInsercaoServico;
-import dominio.produto.servico.ProdutoRequisicaoServico;
+import dominio.produto.servico.*;
 import infraestrutura.produto.dao.ProdutoDAO;
 
 import javax.servlet.ServletException;
@@ -21,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.UUID;
 
 
@@ -28,6 +23,48 @@ import java.util.UUID;
 public class ProdutoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Gson gson = new Gson();
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if ("PATCH".equalsIgnoreCase(request.getMethod())) {
+            doPatch(request, response);
+        } else {
+            super.service(request, response);
+        }
+    }
+
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("utf-8");
+        req.setCharacterEncoding("utf-8");
+
+        BufferedReader bufferedReader = req.getReader();
+        StringBuffer stringBuffer = new StringBuffer();
+
+        String atributos;
+        while((atributos = bufferedReader.readLine()) != null) {
+            stringBuffer.append(atributos);
+        }
+        try {
+            String urlRequisicao = req.getRequestURI();
+            String[] partesDaURL = urlRequisicao.split("/");
+            if (partesDaURL.length == 5 && partesDaURL[4].equalsIgnoreCase("alterar-lativo")) {
+                ProdutoRequisicaoDto produtoRequisicaoDto = new ProdutoRequisicaoDto(
+                        UUID.fromString(partesDaURL[3].replace("/", ""))
+                );
+
+                ProdutoLativoDto produtoLativoDto = gson.fromJson(stringBuffer.toString(), ProdutoLativoDto.class);
+
+                ProdutoLativoServico produtoServico = new ProdutoLativoServico();
+                PrintWriter printWriter = resp.getWriter();
+                printWriter.print(gson.toJson(produtoServico.alterarLativo(produtoRequisicaoDto.getHash(), produtoLativoDto)));
+                printWriter.flush();
+            }
+        } catch(ProdutoInvalidoExcecao e){
+            resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
+            resp.setStatus(404);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,33 +119,31 @@ public class ProdutoServlet extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
         req.setCharacterEncoding("utf-8");
         try {
-        BufferedReader bufferedReader = req.getReader();
-        StringBuffer stringBuffer = new StringBuffer();
-        String atributos;
-        while((atributos = bufferedReader.readLine()) != null) {
-            stringBuffer.append(atributos);
-        }
+            BufferedReader bufferedReader = req.getReader();
+            StringBuffer stringBuffer = new StringBuffer();
+            String atributos;
+            while((atributos = bufferedReader.readLine()) != null) {
+                stringBuffer.append(atributos);
+            }
 
-        ProdutoAtualizacaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoAtualizacaoDto.class);
+            ProdutoAtualizacaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoAtualizacaoDto.class);
 
-        String urlRequisicao = req.getRequestURI();
-        String[] partesDaURL = urlRequisicao.split("/");
+            String urlRequisicao = req.getRequestURI();
+            String[] partesDaURL = urlRequisicao.split("/");
 
-        UUID produtoHash = null;
-        if (partesDaURL.length >= 4){
-            produtoHash = UUID.fromString(partesDaURL[3].replace("/", ""));
-        }
+            UUID produtoHash = null;
 
-        boolean alterarLativo = false;
-        if (partesDaURL.length == 5){
-             alterarLativo = partesDaURL[4].equalsIgnoreCase("ativar");
-        }
+            if (partesDaURL.length >= 4){
+                produtoHash = UUID.fromString(partesDaURL[3].replace("/", ""));
+            }
 
-        PrintWriter printWriter = resp.getWriter();
-        ProdutoAtualizacaoServico produtoServico = new ProdutoAtualizacaoServico();
-        printWriter.print(gson.toJson(produtoServico.atualizarProduto(alterarLativo, produtoHash, produtoDto)));
-        printWriter.flush();
-        resp.setStatus(202);
+            PrintWriter printWriter = resp.getWriter();
+            ProdutoAtualizacaoServico produtoServico = new ProdutoAtualizacaoServico();
+            printWriter.print(gson.toJson(produtoServico.atualizarProduto(produtoHash, produtoDto)));
+            printWriter.flush();
+            resp.setStatus(202);
+
+
         } catch(ProdutoInvalidoExcecao e){
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
             resp.setStatus(400);

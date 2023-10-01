@@ -1,4 +1,4 @@
-package dominio.produto.servico;
+package dominio.produto.Util;
 
 import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
@@ -10,7 +10,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-public class UtilProduto {
+public class UtilVerificacoesProduto {
     private ProdutoDAO produtoDAO = new ProdutoDAO();
 
     public void verificarHash(UUID hash) throws ProdutoInvalidoExcecao{

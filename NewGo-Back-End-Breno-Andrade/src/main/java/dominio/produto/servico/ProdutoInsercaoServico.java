@@ -2,6 +2,7 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
+import dominio.produto.Util.UtilVerificacoesProduto;
 import infraestrutura.produto.entidade.Produto;
 import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
@@ -9,7 +10,7 @@ import infraestrutura.produto.dao.ProdutoDAO;
 import java.util.UUID;
 
 public class ProdutoInsercaoServico {
-    private UtilProduto utilProduto = new UtilProduto();
+    private UtilVerificacoesProduto utilVerificacoesProduto = new UtilVerificacoesProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper conversorProduto = new ProdutoMapper();
 
@@ -21,7 +22,7 @@ public class ProdutoInsercaoServico {
 
         Produto novoProduto = conversorProduto.insercaoDtoParaEntidade(produtoInsercaoDto);
         novoProduto.setHash(gerarHashUnico());
-        novoProduto.setDtcreate(utilProduto.gerarTimestampAtual());
+        novoProduto.setDtcreate(utilVerificacoesProduto.gerarTimestampAtual());
 
         return conversorProduto.entidadeParaRetornoDto(produtoDAO.inserirNovoProduto(novoProduto));
     }
@@ -38,9 +39,9 @@ public class ProdutoInsercaoServico {
         nomeDuplicado(produtoDto.getNome());
         nomeVazio(produtoDto.getNome());
         ean13Duplicado(produtoDto.getEan13());
-        utilProduto.precoNegativo(produtoDto.getPreco());
-        utilProduto.quantidadeNegativo(produtoDto.getQuantidade());
-        utilProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
+        utilVerificacoesProduto.precoNegativo(produtoDto.getPreco());
+        utilVerificacoesProduto.quantidadeNegativo(produtoDto.getQuantidade());
+        utilVerificacoesProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
     }
 
     public void nomeDuplicado(String nome) throws ProdutoInvalidoExcecao {

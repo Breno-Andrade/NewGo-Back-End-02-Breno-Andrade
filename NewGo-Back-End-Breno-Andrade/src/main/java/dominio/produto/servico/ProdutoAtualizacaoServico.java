@@ -2,6 +2,7 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoAtualizacaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
+import dominio.produto.Util.UtilVerificacoesProduto;
 import dominio.produto.excecao.ProdutoAtualizacaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
@@ -10,21 +11,19 @@ import infraestrutura.produto.entidade.Produto;
 import java.util.UUID;
 
 public class ProdutoAtualizacaoServico {
-    private UtilProduto utilProduto = new UtilProduto();
+    private UtilVerificacoesProduto utilVerificacoesProduto = new UtilVerificacoesProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
-    public ProdutoRetornoDto atualizarProduto(boolean alterarLativo, UUID hash, ProdutoAtualizacaoDto produtoDto){
-        utilProduto.verificarHash(hash);
+    public ProdutoRetornoDto atualizarProduto(UUID hash, ProdutoAtualizacaoDto produtoDto){
+        utilVerificacoesProduto.verificarHash(hash);
         Produto produtoTemp = produtoDAO.buscarPorHash(hash);
 
-        if(!alterarLativo){
-            verificarLativo(produtoTemp);
-        }
+        verificarLativo(produtoTemp);
         verificacaoModificacoesInvalidas(produtoDto, produtoTemp);
 
         Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoDto, produtoTemp);
-        produto.setDtupdate(utilProduto.gerarTimestampAtual());
+        produto.setDtupdate(utilVerificacoesProduto.gerarTimestampAtual());
 
         produtoDAO.alterarLativo(hash, true);
         produtoDAO.atualizarProduto(hash, produto);
@@ -34,9 +33,9 @@ public class ProdutoAtualizacaoServico {
     }
 
     public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
-        utilProduto.precoNegativo(produtoDto.getPreco());
-        utilProduto.quantidadeNegativo(produtoDto.getQuantidade());
-        utilProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
+        utilVerificacoesProduto.precoNegativo(produtoDto.getPreco());
+        utilVerificacoesProduto.quantidadeNegativo(produtoDto.getQuantidade());
+        utilVerificacoesProduto.estoqueMinNegativo(produtoDto.getEstoque_min());
         verificarAlteracaoId(produtoDto, produto);
         verificarAlteracaoHash(produtoDto, produto);
         verificarAlteracaoNome(produtoDto, produto);
