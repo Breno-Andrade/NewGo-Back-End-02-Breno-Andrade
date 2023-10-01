@@ -25,11 +25,12 @@ public class ProdutoAtualizacaoServico {
 
         Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoDto, produtoTemp);
         produto.setDtupdate(utilProduto.gerarTimestampAtual());
-        produtoDAO.alterarLativo(hash, true);
 
-//
-//        produto = produtoDAO.buscarPorHash(hash);
-        return produtoMapper.entidadeParaRetornoDto(produtoDAO.atualizarProduto(hash, produto));
+        produtoDAO.alterarLativo(hash, true);
+        produtoDAO.atualizarProduto(hash, produto);
+
+        produto = produtoDAO.buscarPorHash(hash);
+        return produtoMapper.entidadeParaRetornoDto(produto);
     }
 
     public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
