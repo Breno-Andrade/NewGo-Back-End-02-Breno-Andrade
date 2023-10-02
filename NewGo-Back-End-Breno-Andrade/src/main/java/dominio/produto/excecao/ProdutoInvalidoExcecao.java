@@ -14,4 +14,8 @@ public class ProdutoInvalidoExcecao extends RuntimeException {
     public ProdutoInvalidoExcecao(ProdutoRequisicaoExcecao mensagemErro){
         super(mensagemErro.getMensagem());
     }
+
+    public ProdutoInvalidoExcecao(String mensagem) {
+        super(mensagem);
+    }
 }

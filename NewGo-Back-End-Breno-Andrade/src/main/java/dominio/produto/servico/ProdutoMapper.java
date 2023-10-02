@@ -5,10 +5,8 @@ import aplicacao.produto.dto.ProdutoInsercaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import infraestrutura.produto.entidade.Produto;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutoMapper {
     public Produto insercaoDtoParaEntidade(ProdutoInsercaoDto produtoDto) {
@@ -52,5 +50,13 @@ public class ProdutoMapper {
                 produto.getDtupdate(),
                 produto.isLativo()
         );
+    }
+
+    public List<ProdutoRetornoDto> listaEntidadeParaListaRetorno(List<Produto> produtos){
+        List<ProdutoRetornoDto> produtosDto = new ArrayList<>();
+        for (Produto produto : produtos){
+            produtosDto.add(entidadeParaRetornoDto(produto));
+        }
+        return produtosDto;
     }
 }

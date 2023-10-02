@@ -2,20 +2,44 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoRequisicaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
+import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import dominio.produto.Util.UtilVerificacoesProduto;
+import dominio.produto.excecao.ErroJson;
+import dominio.produto.excecao.ProdutoInvalidoExcecao;
+import dominio.produto.excecao.ProdutoRequisicaoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 
-public class ProdutoRequisicaoServico{
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProdutoRequisicaoServico {
     private UtilVerificacoesProduto utilVerificacoesProduto = new UtilVerificacoesProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
     private ProdutoMapper produtoMapper = new ProdutoMapper();
 
-    public ProdutoRetornoDto requisitarProduto(ProdutoRequisicaoDto produtoDto){
+    public ProdutoRetornoDto requisitarProduto(ProdutoRequisicaoDto produtoDto) {
         utilVerificacoesProduto.verificarHash(produtoDto.getHash());
 
         return produtoMapper.entidadeParaRetornoDto(produtoDAO.buscarPorHash(produtoDto.getHash()));
     }
 
+    public ProdutoRetornoDto requisitarProdutoAtivo(ProdutoRequisicaoDto produtoDto) {
 
+        try{
+            utilVerificacoesProduto.verificarHash(produtoDto.getHash());
+            if(produtoDAO.buscarPorHashAtivo(produtoDto.getHash()) == null) {
+                throw new ProdutoInvalidoExcecao(ProdutoRequisicaoExcecao.PRODUTO_INATIVO);
+            }
+            return produtoMapper.entidadeParaRetornoDto(produtoDAO.buscarPorHashAtivo(produtoDto.getHash()));
+        } catch (IllegalArgumentException e){
+            throw new ProdutoInvalidoExcecao(e.getMessage());
+        }
+    }
 
+    public List<ProdutoRetornoDto> requisitarTodosProdutos() {
+        return produtoMapper.listaEntidadeParaListaRetorno(produtoDAO.buscarTodos());
+    }
+    public List<ProdutoRetornoDto> requisitarTodosProdutosAtivos() {
+        return produtoMapper.listaEntidadeParaListaRetorno(produtoDAO.buscarTodosAtivos());
+    }
 }

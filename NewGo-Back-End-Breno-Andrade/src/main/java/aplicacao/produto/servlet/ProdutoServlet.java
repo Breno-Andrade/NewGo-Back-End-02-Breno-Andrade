@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.servico.*;
-import infraestrutura.produto.dao.ProdutoDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.util.UUID;
 
 
@@ -97,14 +95,34 @@ public class ProdutoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
-        try{
-            ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(
-                    UUID.fromString(req.getPathInfo().replaceAll("/", ""))
-            );
+        ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
+        PrintWriter printer = resp.getWriter();
 
-            ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
-            PrintWriter printer = resp.getWriter();
-            printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
+        String[] url = req.getRequestURI().split("/");
+        String filtro = req.getParameter("ativo");
+        try{
+            //Consulta em lote.
+            if (url.length == 3){
+                if (url[2].equalsIgnoreCase("produtos")){
+                    if (Boolean.parseBoolean(filtro)){
+                        printer.print(gson.toJson(produtoServico.requisitarTodosProdutosAtivos()));
+                        return;
+                    }
+                    printer.print(gson.toJson(produtoServico.requisitarTodosProdutos()));
+                }
+            }
+            // Consulta especifica.
+            if (url.length >= 4){
+                ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(UUID.fromString(url[3]));
+                if (url.length == 5){
+                    if (url[4].equalsIgnoreCase("ativo")){
+                        printer.print(gson.toJson(produtoServico.requisitarProdutoAtivo(produtoDto)));
+                        return;
+                    }
+                }
+                printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
+            }
+
             printer.flush();
             resp.setStatus(200);
         } catch (ProdutoInvalidoExcecao e){
