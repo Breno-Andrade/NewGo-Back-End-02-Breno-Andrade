@@ -2,14 +2,11 @@ package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoRequisicaoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
-import com.sun.javaws.exceptions.ErrorCodeResponseException;
 import dominio.produto.Util.UtilVerificacoesProduto;
-import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.excecao.ProdutoRequisicaoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutoRequisicaoServico {
@@ -41,5 +38,8 @@ public class ProdutoRequisicaoServico {
     }
     public List<ProdutoRetornoDto> requisitarTodosProdutosAtivos() {
         return produtoMapper.listaEntidadeParaListaRetorno(produtoDAO.buscarTodosAtivos());
+    }
+    public List<ProdutoRetornoDto> requisitarTodosProdutosInativos() {
+        return produtoMapper.listaEntidadeParaListaRetorno(produtoDAO.buscarTodosInativos());
     }
 }

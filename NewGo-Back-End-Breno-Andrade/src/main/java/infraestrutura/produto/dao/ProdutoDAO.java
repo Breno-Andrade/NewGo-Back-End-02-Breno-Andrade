@@ -145,6 +145,40 @@ public class ProdutoDAO {
         return produtos;
     }
 
+    public List<Produto> buscarTodosInativos() {
+        String selectAllSql = "SELECT * FROM produto WHERE lativo = false";
+        List<Produto> produtos = new ArrayList<Produto>();
+
+        try {
+            PreparedStatement comandoSqlComConexao = conexao.prepareStatement(selectAllSql);
+            ResultSet resultadoOperacao = comandoSqlComConexao.executeQuery();
+
+            while (resultadoOperacao.next()) {
+                Produto produto = new Produto(
+                        resultadoOperacao.getLong("id"),
+                        UUID.fromString(resultadoOperacao.getString("hash")),
+                        resultadoOperacao.getString("nome"),
+                        resultadoOperacao.getString("descricao"),
+                        resultadoOperacao.getString("ean13"),
+                        resultadoOperacao.getDouble("preco"),
+                        resultadoOperacao.getDouble("quantidade"),
+                        resultadoOperacao.getDouble("estoque_min"),
+                        resultadoOperacao.getTimestamp("dtcreate"),
+                        resultadoOperacao.getTimestamp("dtupdate"),
+                        resultadoOperacao.getBoolean("lativo")
+                );
+
+                produtos.add(produto);
+            }
+
+            comandoSqlComConexao.close();
+            resultadoOperacao.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return produtos;
+    }
+
 
     public Produto buscarPorHash(UUID hash) {
         String selectSql = "SELECT * FROM produto WHERE hash = ?";

@@ -99,13 +99,17 @@ public class ProdutoServlet extends HttpServlet {
         PrintWriter printer = resp.getWriter();
 
         String[] url = req.getRequestURI().split("/");
-        String filtro = req.getParameter("ativo");
+        String filtro = req.getParameter("lativo");
         try{
             //Consulta em lote.
             if (url.length == 3){
                 if (url[2].equalsIgnoreCase("produtos")){
                     if (Boolean.parseBoolean(filtro)){
                         printer.print(gson.toJson(produtoServico.requisitarTodosProdutosAtivos()));
+                        return;
+                    }
+                    if (!Boolean.parseBoolean(filtro)){
+                        printer.print(gson.toJson(produtoServico.requisitarTodosProdutosInativos()));
                         return;
                     }
                     printer.print(gson.toJson(produtoServico.requisitarTodosProdutos()));
