@@ -157,7 +157,7 @@ public class ProdutoDAO {
     }
 
     public void alterarLativo(UUID hash, boolean lativo){
-        String sql = "UPDATE produto SET lativo = ? WHERE hash = ?";
+        String sql = "UPDATE produto SET lativo = ?, dtupdate = CURRENT_TIMESTAMP WHERE hash = ?";
         try {
             PreparedStatement comandoComConexao = conexao.prepareStatement(sql);
             comandoComConexao.setBoolean(1, lativo);
