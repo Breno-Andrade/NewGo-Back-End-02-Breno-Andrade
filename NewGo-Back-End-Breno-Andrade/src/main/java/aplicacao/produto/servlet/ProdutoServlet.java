@@ -108,7 +108,7 @@ public class ProdutoServlet extends HttpServlet {
                         printer.print(gson.toJson(produtoServico.requisitarTodosProdutosAtivos()));
                         return;
                     }
-                    if (!Boolean.parseBoolean(filtro)){
+                    if (!Boolean.parseBoolean(filtro) && filtro != null){
                         printer.print(gson.toJson(produtoServico.requisitarTodosProdutosInativos()));
                         return;
                     }
