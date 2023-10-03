@@ -100,6 +100,7 @@ public class ProdutoServlet extends HttpServlet {
 
         String[] url = req.getRequestURI().split("/");
         String filtro = req.getParameter("lativo");
+        String filtro2 = req.getParameter("estoque-menor-minimo");
         try{
             //Consulta em lote.
             if (url.length == 3){
@@ -111,6 +112,12 @@ public class ProdutoServlet extends HttpServlet {
                     if (!Boolean.parseBoolean(filtro) && filtro != null){
                         printer.print(gson.toJson(produtoServico.requisitarTodosProdutosInativos()));
                         return;
+                    }
+                    if(filtro2 != null){
+                        if (Boolean.parseBoolean(filtro2)){
+                            printer.print(gson.toJson(produtoServico.requisitarProdutosEstoqueMenorMinimo()));
+                            return;
+                        }
                     }
                     printer.print(gson.toJson(produtoServico.requisitarTodosProdutos()));
                 }

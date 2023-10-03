@@ -6,7 +6,9 @@ import dominio.produto.Util.UtilVerificacoesProduto;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.excecao.ProdutoRequisicaoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
+import infraestrutura.produto.entidade.Produto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProdutoRequisicaoServico {
@@ -41,5 +43,16 @@ public class ProdutoRequisicaoServico {
     }
     public List<ProdutoRetornoDto> requisitarTodosProdutosInativos() {
         return produtoMapper.listaEntidadeParaListaRetorno(produtoDAO.buscarTodosInativos());
+    }
+
+    public List<ProdutoRetornoDto> requisitarProdutosEstoqueMenorMinimo(){
+        List<Produto> produtosTemp = produtoDAO.buscarTodosAtivos();
+        List<Produto> produtosEstoqueNegativo = new ArrayList<>();
+        for (Produto produto : produtosTemp){
+            if (produto.getQuantidade() < produto.getEstoque_min()){
+                produtosEstoqueNegativo.add(produto);
+            }
+        }
+        return produtoMapper.listaEntidadeParaListaRetorno(produtosEstoqueNegativo);
     }
 }
