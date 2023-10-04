@@ -2,6 +2,7 @@ package aplicacao.produto.servlet;
 
 import aplicacao.produto.dto.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @WebServlet("/produtos/*")
 public class ProdutoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder().serializeNulls().create();
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
