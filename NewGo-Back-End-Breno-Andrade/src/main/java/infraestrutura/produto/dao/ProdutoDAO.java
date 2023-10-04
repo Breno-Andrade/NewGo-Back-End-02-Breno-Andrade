@@ -258,6 +258,21 @@ public class ProdutoDAO {
         }
     }
 
+    public void alterarPreco(Produto produto){
+        String sql = "UPDATE produto SET preco = ?, dtupdate = ? WHERE hash = ?";
+        try {
+            PreparedStatement comandoComConexao = conexao.prepareStatement(sql);
+            comandoComConexao.setDouble(1, produto.getPreco());
+            comandoComConexao.setObject(2, produto.getDtupdate());
+            comandoComConexao.setObject(3, produto.getHash());
+
+            comandoComConexao.executeUpdate();
+            comandoComConexao.close();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public String excluirProduto(UUID hash) {
         try {
             String deleteSql = "DELETE FROM produto WHERE hash = ?";
