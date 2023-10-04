@@ -2,6 +2,7 @@ package aplicacao.produto.servlet;
 
 import aplicacao.produto.dto.*;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.servico.*;
@@ -14,6 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -68,6 +72,8 @@ public class ProdutoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
+        ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
+
 
         try {
             StringBuffer stringBuffer = new StringBuffer();
@@ -77,13 +83,23 @@ public class ProdutoServlet extends HttpServlet {
             while((atributos = bufferedReader.readLine()) != null) {
                 stringBuffer.append(atributos);
             }
-            ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
-            ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
-            ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
-
-            PrintWriter printWriter = resp.getWriter();
-            printWriter.print(gson.toJson(produtoRetornoDto));
-            printWriter.flush();
+            String[] url = req.getRequestURI().split("/");
+            if (url.length == 4){
+                if (url[3].equalsIgnoreCase("inserir-lote")){
+                    Type produtoInsercaoType = new TypeToken<List<ProdutoInsercaoDto>>() {}.getType();
+                    List<ProdutoInsercaoDto> produtosInsercaoDto = gson.fromJson(stringBuffer.toString(), produtoInsercaoType);
+                    PrintWriter printWriter = resp.getWriter();
+                    printWriter.print(gson.toJson(produtoInsercaoServico.salvarNovosProdutos(produtosInsercaoDto)));
+                    return;
+                }
+            }
+            if (url.length == 3) {
+                ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
+                ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
+                PrintWriter printWriter = resp.getWriter();
+                printWriter.print(gson.toJson(produtoRetornoDto));
+                printWriter.flush();
+            }
             resp.setStatus(201);
         } catch (ProdutoInvalidoExcecao e){
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
