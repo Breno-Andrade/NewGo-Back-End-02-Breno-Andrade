@@ -97,4 +97,14 @@ public class ProdutoMapper {
                 mensagem
         );
     }
+
+    public ProdutoAtualizacaoPrecoErroRetornoDto atualizarPrecoDtoParaLoteErroRetornoDto(ProdutoAtualizarPrecoDto produtoDto, String status, String mensagem){
+        return new ProdutoAtualizacaoPrecoErroRetornoDto(
+                produtoDto.getHash(),
+                produtoDto.getOperacao(),
+                produtoDto.getValor(),
+                status,
+                mensagem
+        );
+    }
 }
