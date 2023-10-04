@@ -1,18 +1,20 @@
 package dominio.produto.servico;
 
 import aplicacao.produto.dto.ProdutoInsercaoDto;
+import aplicacao.produto.dto.ProdutoLoteRetornoDto;
 import aplicacao.produto.dto.ProdutoRetornoDto;
 import dominio.produto.Util.UtilVerificacoesProduto;
 import infraestrutura.produto.entidade.Produto;
 import dominio.produto.excecao.ProdutoInsercaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
-import java.util.UUID;
+
+import java.util.*;
 
 public class ProdutoInsercaoServico {
     private UtilVerificacoesProduto utilVerificacoesProduto = new UtilVerificacoesProduto();
     private ProdutoDAO produtoDAO = new ProdutoDAO();
-    private ProdutoMapper conversorProduto = new ProdutoMapper();
+    private ProdutoMapper produtoMapper = new ProdutoMapper();
 
     public ProdutoInsercaoServico() {
     }
@@ -20,11 +22,35 @@ public class ProdutoInsercaoServico {
     public ProdutoRetornoDto salvarNovoProduto(ProdutoInsercaoDto produtoInsercaoDto){
         verificacoesSalvamento(produtoInsercaoDto);
 
-        Produto novoProduto = conversorProduto.insercaoDtoParaEntidade(produtoInsercaoDto);
+        Produto novoProduto = produtoMapper.insercaoDtoParaEntidade(produtoInsercaoDto);
         novoProduto.setHash(gerarHashUnico());
         novoProduto.setDtcreate(utilVerificacoesProduto.gerarTimestampAtual());
 
-        return conversorProduto.entidadeParaRetornoDto(produtoDAO.inserirNovoProduto(novoProduto));
+        return produtoMapper.entidadeParaRetornoDto(produtoDAO.inserirNovoProduto(novoProduto));
+    }
+
+    public List<Object> salvarNovosProdutos(List<ProdutoInsercaoDto> produtosInsercao){
+        List<Object> produtosLoteRetornoDto = new ArrayList<>();
+
+        for(ProdutoInsercaoDto produtoInsercaoDto : produtosInsercao){
+            try{
+                 produtosLoteRetornoDto.add(
+                         produtoMapper.retornoDtoParaLoteRetornoDto(
+                                 salvarNovoProduto(produtoInsercaoDto),
+                                 "sucesso",
+                                 "Produto inserido ao banco")
+                 );
+            } catch (ProdutoInvalidoExcecao e){
+                produtosLoteRetornoDto.add(
+                        produtoMapper.insercaoDtoParaLoteErroRetornoDto(
+                                produtoInsercaoDto,
+                                "Erro",
+                                e.getMessage()
+                        )
+                );
+            }
+        }
+        return produtosLoteRetornoDto;
     }
 
     public UUID gerarHashUnico(){
