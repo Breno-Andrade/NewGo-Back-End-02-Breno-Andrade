@@ -88,4 +88,13 @@ public class ProdutoMapper {
                 mensagem
         );
     }
+
+    public ProdutoLoteAtualizacaoErroRetornoDto atualizarEstoqueDtoParaLoteErroRetornoDto(ProdutoAtualizarEstoqueDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteAtualizacaoErroRetornoDto(
+                produtoDto.getHash(),
+                produtoDto.getQuantidade(),
+                status,
+                mensagem
+        );
+    }
 }

@@ -1,13 +1,14 @@
 package dominio.produto.servico;
 
-import aplicacao.produto.dto.ProdutoAtualizacaoDto;
-import aplicacao.produto.dto.ProdutoRetornoDto;
+import aplicacao.produto.dto.*;
 import dominio.produto.Util.UtilVerificacoesProduto;
 import dominio.produto.excecao.ProdutoAtualizacaoExcecao;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import infraestrutura.produto.dao.ProdutoDAO;
 import infraestrutura.produto.entidade.Produto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ProdutoAtualizacaoServico {
@@ -25,11 +26,47 @@ public class ProdutoAtualizacaoServico {
         Produto produto = produtoMapper.atualizacaoDtoParaEntidade(produtoDto, produtoTemp);
         produto.setDtupdate(utilVerificacoesProduto.gerarTimestampAtual());
 
-        produtoDAO.alterarLativo(hash, true);
         produtoDAO.atualizarProduto(hash, produto);
 
         produto = produtoDAO.buscarPorHash(hash);
         return produtoMapper.entidadeParaRetornoDto(produto);
+    }
+
+    public ProdutoRetornoDto atualizarEstoque(ProdutoAtualizarEstoqueDto produtoDto){
+        utilVerificacoesProduto.verificarHash(produtoDto.getHash());
+        Produto produto = produtoDAO.buscarPorHash(produtoDto.getHash());
+        verificarEstoqueNegativo(produtoDto, produto);
+
+        produto.setQuantidade(produtoDto.getQuantidade() + produto.getQuantidade());
+        produto.setDtupdate(utilVerificacoesProduto.gerarTimestampAtual());
+
+        produtoDAO.alterarEstoque(produto);
+
+        return produtoMapper.entidadeParaRetornoDto(produto);
+    }
+
+    public List<Object> atualizarLoteEstoque(List<ProdutoAtualizarEstoqueDto> produtosAtualizarEstoqueDto){
+        List<Object> produtosLoteRetornoDto = new ArrayList<>();
+
+        for(ProdutoAtualizarEstoqueDto produtoDto : produtosAtualizarEstoqueDto){
+            try{
+                produtosLoteRetornoDto.add(
+                        produtoMapper.retornoDtoParaLoteRetornoDto(
+                                atualizarEstoque((produtoDto)),
+                                "sucesso",
+                                "Produto atualizado no banco"
+                        ));
+            } catch (ProdutoInvalidoExcecao e){
+                produtosLoteRetornoDto.add(
+                        produtoMapper.atualizarEstoqueDtoParaLoteErroRetornoDto(
+                                produtoDto,
+                                "Erro",
+                                e.getMessage()
+                        )
+                );
+            }
+        }
+        return produtosLoteRetornoDto;
     }
 
     public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
@@ -42,6 +79,12 @@ public class ProdutoAtualizacaoServico {
         verificarAlteracaoEan13(produtoDto, produto);
         verificarAlteracaoDtcreate(produtoDto, produto);
         verificarAlteracaoDtupdate(produtoDto, produto);
+    }
+
+    public void verificarEstoqueNegativo(ProdutoAtualizarEstoqueDto produtoDto, Produto produto){
+        if (produto.getQuantidade() + produtoDto.getQuantidade() < 0){
+            throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.ESTOQUE_NEGATIVO);
+        }
     }
 
     public void verificarAlteracaoId(ProdutoAtualizacaoDto produtoDto, Produto produto){
