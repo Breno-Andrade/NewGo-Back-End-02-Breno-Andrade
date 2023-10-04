@@ -89,15 +89,19 @@ public class ProdutoServlet extends HttpServlet {
                     Type produtoInsercaoType = new TypeToken<List<ProdutoInsercaoDto>>() {}.getType();
                     List<ProdutoInsercaoDto> produtosInsercaoDto = gson.fromJson(stringBuffer.toString(), produtoInsercaoType);
                     printWriter.print(gson.toJson(produtoInsercaoServico.salvarNovosProdutos(produtosInsercaoDto)));
-                    return;
                 }
                 if (url[3].equalsIgnoreCase("atualizar-estoque")){
                     Type produtoAtualizarEstoqueType = new TypeToken<List<ProdutoAtualizarEstoqueDto>>() {}.getType();
                     List<ProdutoAtualizarEstoqueDto> produtosAtualizarEstoque = gson.fromJson(stringBuffer.toString(), produtoAtualizarEstoqueType);
                     printWriter.print(gson.toJson(produtoAtualizacaoServico.atualizarLoteEstoque(produtosAtualizarEstoque)));
-                    resp.setStatus(200);
-                    return;
                 }
+                if (url[3].equalsIgnoreCase("atualizar-preco")){
+                    Type produtoAtualizarPrecoType = new TypeToken<List<ProdutoAtualizarPrecoDto>>() {}.getType();
+                    List<ProdutoAtualizarPrecoDto> produtosAtualizarPreco = gson.fromJson(stringBuffer.toString(), produtoAtualizarPrecoType);
+                    printWriter.print(gson.toJson(produtoAtualizacaoServico.atualizarPrecoLote(produtosAtualizarPreco)));
+                }
+                resp.setStatus(200);
+                return;
             }
             if (url.length == 3) {
                 ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
