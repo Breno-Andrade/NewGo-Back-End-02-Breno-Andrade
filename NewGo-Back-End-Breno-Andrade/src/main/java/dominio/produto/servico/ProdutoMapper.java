@@ -1,8 +1,6 @@
 package dominio.produto.servico;
 
-import aplicacao.produto.dto.ProdutoAtualizacaoDto;
-import aplicacao.produto.dto.ProdutoInsercaoDto;
-import aplicacao.produto.dto.ProdutoRetornoDto;
+import aplicacao.produto.dto.*;
 import infraestrutura.produto.entidade.Produto;
 
 import java.util.ArrayList;
@@ -58,5 +56,36 @@ public class ProdutoMapper {
             produtosDto.add(entidadeParaRetornoDto(produto));
         }
         return produtosDto;
+    }
+
+    public ProdutoLoteRetornoDto retornoDtoParaLoteRetornoDto(ProdutoRetornoDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteRetornoDto(
+                produtoDto.getId(),
+                produtoDto.getHash(),
+                produtoDto.getNome(),
+                produtoDto.getDescricao(),
+                produtoDto.getEan13(),
+                produtoDto.getPreco(),
+                produtoDto.getQuantidade(),
+                produtoDto.getEstoque_min(),
+                produtoDto.getDtcreate(),
+                produtoDto.getDtupdate(),
+                produtoDto.isLativo(),
+                status,
+                mensagem
+        );
+    }
+
+    public ProdutoLoteErroRetornoDto insercaoDtoParaLoteErroRetornoDto(ProdutoInsercaoDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteErroRetornoDto(
+                produtoDto.getNome(),
+                produtoDto.getDescricao(),
+                produtoDto.getEan13(),
+                produtoDto.getPreco(),
+                produtoDto.getQuantidade(),
+                produtoDto.getEstoque_min(),
+                status,
+                mensagem
+        );
     }
 }
