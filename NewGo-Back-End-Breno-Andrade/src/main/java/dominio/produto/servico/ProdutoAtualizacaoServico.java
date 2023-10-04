@@ -69,6 +69,67 @@ public class ProdutoAtualizacaoServico {
         return produtosLoteRetornoDto;
     }
 
+    public List<Object> atualizarPrecoLote(List<ProdutoAtualizarPrecoDto> produtosDto){
+        List<Object> produtosLoteRetornoDto = new ArrayList<>();
+
+        for(ProdutoAtualizarPrecoDto produtoDto : produtosDto){
+            try{
+                if (produtoDto.getOperacao().equalsIgnoreCase("valor-fixo")){
+                    produtosLoteRetornoDto.add(
+                            produtoMapper.retornoDtoParaLoteRetornoDto(
+                                    atualizarPrecoValorFixo(produtoDto),
+                                    "Sucesso",
+                                    "Preco atualizado com valor fixo informado."
+                            ));
+                }
+
+                if (produtoDto.getOperacao().equalsIgnoreCase("porcentagem")){
+                    produtosLoteRetornoDto.add(
+                            produtoMapper.retornoDtoParaLoteRetornoDto(
+                                    atualizarPrecoPorcentagem(produtoDto),
+                                    "Sucesso",
+                                    "Preco atualizado com percentual informado."
+                            ));
+                }
+            } catch (ProdutoInvalidoExcecao e){
+                produtosLoteRetornoDto.add(
+                        produtoMapper.atualizarPrecoDtoParaLoteErroRetornoDto(
+                                produtoDto,
+                                "Erro",
+                                e.getMessage()
+                        )
+                );
+            }
+        }
+        return produtosLoteRetornoDto;
+    }
+
+    public ProdutoRetornoDto atualizarPrecoValorFixo(ProdutoAtualizarPrecoDto produtoDto){
+        utilVerificacoesProduto.verificarHash(produtoDto.getHash());
+        Produto produto = produtoDAO.buscarPorHash(produtoDto.getHash());
+        verificarPrecoFixoNegativo(produtoDto, produto);
+
+        produto.setPreco(produtoDto.getValor() + produto.getPreco());
+        produto.setDtupdate(utilVerificacoesProduto.gerarTimestampAtual());
+
+        produtoDAO.alterarPreco(produto);
+
+        return produtoMapper.entidadeParaRetornoDto(produto);
+    }
+
+    public ProdutoRetornoDto atualizarPrecoPorcentagem(ProdutoAtualizarPrecoDto produtoDto){
+        utilVerificacoesProduto.verificarHash(produtoDto.getHash());
+        Produto produto = produtoDAO.buscarPorHash(produtoDto.getHash());
+        verificarPrecoPorcentagemNegativo(produtoDto, produto);
+
+        produto.setPreco(produto.getPreco() + (produto.getPreco() * produtoDto.getValor() / 100));
+        produto.setDtupdate(utilVerificacoesProduto.gerarTimestampAtual());
+
+        produtoDAO.alterarPreco(produto);
+
+        return produtoMapper.entidadeParaRetornoDto(produto);
+    }
+
     public void verificacaoModificacoesInvalidas(ProdutoAtualizacaoDto produtoDto, Produto produto){
         utilVerificacoesProduto.precoNegativo(produtoDto.getPreco());
         utilVerificacoesProduto.quantidadeNegativo(produtoDto.getQuantidade());
@@ -79,6 +140,18 @@ public class ProdutoAtualizacaoServico {
         verificarAlteracaoEan13(produtoDto, produto);
         verificarAlteracaoDtcreate(produtoDto, produto);
         verificarAlteracaoDtupdate(produtoDto, produto);
+    }
+
+    public void verificarPrecoFixoNegativo(ProdutoAtualizarPrecoDto produtoAtualizarPrecoDto, Produto produto){
+        if (produto.getPreco() + produtoAtualizarPrecoDto.getValor() < 0){
+            throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.PRECO_NEGATIVO);
+        }
+    }
+
+    public void verificarPrecoPorcentagemNegativo(ProdutoAtualizarPrecoDto produtoDto, Produto produto){
+        if (produto.getPreco() + (produto.getPreco() * produtoDto.getValor() / 100) < 0){
+            throw new ProdutoInvalidoExcecao(ProdutoAtualizacaoExcecao.PRECO_NEGATIVO);
+        }
     }
 
     public void verificarEstoqueNegativo(ProdutoAtualizarEstoqueDto produtoDto, Produto produto){
