@@ -73,7 +73,8 @@ public class ProdutoServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
         ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
-
+        ProdutoAtualizacaoServico produtoAtualizacaoServico = new ProdutoAtualizacaoServico();
+        PrintWriter printWriter = resp.getWriter();
         try {
             StringBuffer stringBuffer = new StringBuffer();
             BufferedReader bufferedReader = req.getReader();
@@ -87,15 +88,20 @@ public class ProdutoServlet extends HttpServlet {
                 if (url[3].equalsIgnoreCase("inserir-lote")){
                     Type produtoInsercaoType = new TypeToken<List<ProdutoInsercaoDto>>() {}.getType();
                     List<ProdutoInsercaoDto> produtosInsercaoDto = gson.fromJson(stringBuffer.toString(), produtoInsercaoType);
-                    PrintWriter printWriter = resp.getWriter();
                     printWriter.print(gson.toJson(produtoInsercaoServico.salvarNovosProdutos(produtosInsercaoDto)));
+                    return;
+                }
+                if (url[3].equalsIgnoreCase("atualizar-estoque")){
+                    Type produtoAtualizarEstoqueType = new TypeToken<List<ProdutoAtualizarEstoqueDto>>() {}.getType();
+                    List<ProdutoAtualizarEstoqueDto> produtosAtualizarEstoque = gson.fromJson(stringBuffer.toString(), produtoAtualizarEstoqueType);
+                    printWriter.print(gson.toJson(produtoAtualizacaoServico.atualizarLoteEstoque(produtosAtualizarEstoque)));
+                    resp.setStatus(200);
                     return;
                 }
             }
             if (url.length == 3) {
                 ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
                 ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
-                PrintWriter printWriter = resp.getWriter();
                 printWriter.print(gson.toJson(produtoRetornoDto));
                 printWriter.flush();
             }
