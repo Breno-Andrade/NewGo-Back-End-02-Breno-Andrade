@@ -74,7 +74,6 @@ public class ProdutoServlet extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
         ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
 
-
         try {
             StringBuffer stringBuffer = new StringBuffer();
             BufferedReader bufferedReader = req.getReader();
