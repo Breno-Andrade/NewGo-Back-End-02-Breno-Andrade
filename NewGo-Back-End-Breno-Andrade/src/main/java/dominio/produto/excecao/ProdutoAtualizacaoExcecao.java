@@ -7,7 +7,8 @@ public enum ProdutoAtualizacaoExcecao {
     EAN13_INVALIDO("Você não pode alterar o codigo ean13 cadastrado"),
     DTCREATE_INVALIDO("Você não pode alterar a data de cadastrado"),
     DTUPDATE_INVALIDO("Você não pode alterar a data de atualização"),
-    LATIVO_INVALIDO("Você não pode alterar um produto desativado");
+    LATIVO_INVALIDO("Você não pode alterar um produto desativado"),
+    ESTOQUE_NEGATIVO("O estoque não pode ficar negativo");
 
     public String mensagem;
     ProdutoAtualizacaoExcecao(String mensagem) {
