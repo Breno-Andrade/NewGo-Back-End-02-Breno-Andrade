@@ -2,10 +2,11 @@ package aplicacao.produto.servlet;
 
 import aplicacao.produto.dto.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import dominio.produto.excecao.ErroJson;
 import dominio.produto.excecao.ProdutoInvalidoExcecao;
 import dominio.produto.servico.*;
-import infraestrutura.produto.dao.ProdutoDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,13 +17,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
 @WebServlet("/produtos/*")
 public class ProdutoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder().serializeNulls().create();
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +73,9 @@ public class ProdutoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
-
+        ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
+        ProdutoAtualizacaoServico produtoAtualizacaoServico = new ProdutoAtualizacaoServico();
+        PrintWriter printWriter = resp.getWriter();
         try {
             StringBuffer stringBuffer = new StringBuffer();
             BufferedReader bufferedReader = req.getReader();
@@ -79,13 +84,32 @@ public class ProdutoServlet extends HttpServlet {
             while((atributos = bufferedReader.readLine()) != null) {
                 stringBuffer.append(atributos);
             }
-            ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
-            ProdutoInsercaoServico produtoInsercaoServico = new ProdutoInsercaoServico();
-            ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
-
-            PrintWriter printWriter = resp.getWriter();
-            printWriter.print(gson.toJson(produtoRetornoDto));
-            printWriter.flush();
+            String[] url = req.getRequestURI().split("/");
+            if (url.length == 4){
+                if (url[3].equalsIgnoreCase("inserir-lote")){
+                    Type produtoInsercaoType = new TypeToken<List<ProdutoInsercaoDto>>() {}.getType();
+                    List<ProdutoInsercaoDto> produtosInsercaoDto = gson.fromJson(stringBuffer.toString(), produtoInsercaoType);
+                    printWriter.print(gson.toJson(produtoInsercaoServico.salvarNovosProdutos(produtosInsercaoDto)));
+                }
+                if (url[3].equalsIgnoreCase("atualizar-estoque")){
+                    Type produtoAtualizarEstoqueType = new TypeToken<List<ProdutoAtualizarEstoqueDto>>() {}.getType();
+                    List<ProdutoAtualizarEstoqueDto> produtosAtualizarEstoque = gson.fromJson(stringBuffer.toString(), produtoAtualizarEstoqueType);
+                    printWriter.print(gson.toJson(produtoAtualizacaoServico.atualizarLoteEstoque(produtosAtualizarEstoque)));
+                }
+                if (url[3].equalsIgnoreCase("atualizar-preco")){
+                    Type produtoAtualizarPrecoType = new TypeToken<List<ProdutoAtualizarPrecoDto>>() {}.getType();
+                    List<ProdutoAtualizarPrecoDto> produtosAtualizarPreco = gson.fromJson(stringBuffer.toString(), produtoAtualizarPrecoType);
+                    printWriter.print(gson.toJson(produtoAtualizacaoServico.atualizarPrecoLote(produtosAtualizarPreco)));
+                }
+                resp.setStatus(200);
+                return;
+            }
+            if (url.length == 3) {
+                ProdutoInsercaoDto produtoDto = gson.fromJson(stringBuffer.toString(), ProdutoInsercaoDto.class);
+                ProdutoRetornoDto produtoRetornoDto = produtoInsercaoServico.salvarNovoProduto(produtoDto);
+                printWriter.print(gson.toJson(produtoRetornoDto));
+                printWriter.flush();
+            }
             resp.setStatus(201);
         } catch (ProdutoInvalidoExcecao e){
             resp.getWriter().write(gson.toJson(new ErroJson(e.getMessage())));
@@ -97,14 +121,45 @@ public class ProdutoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
-        try{
-            ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(
-                    UUID.fromString(req.getPathInfo().replaceAll("/", ""))
-            );
+        ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
+        PrintWriter printer = resp.getWriter();
 
-            ProdutoRequisicaoServico produtoServico = new ProdutoRequisicaoServico();
-            PrintWriter printer = resp.getWriter();
-            printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
+        String[] url = req.getRequestURI().split("/");
+        String filtro = req.getParameter("lativo");
+        String filtro2 = req.getParameter("estoque-menor-minimo");
+        try{
+            //Consulta em lote.
+            if (url.length == 3){
+                if (url[2].equalsIgnoreCase("produtos")){
+                    if (Boolean.parseBoolean(filtro)){
+                        printer.print(gson.toJson(produtoServico.requisitarTodosProdutosAtivos()));
+                        return;
+                    }
+                    if (!Boolean.parseBoolean(filtro) && filtro != null){
+                        printer.print(gson.toJson(produtoServico.requisitarTodosProdutosInativos()));
+                        return;
+                    }
+                    if(filtro2 != null){
+                        if (Boolean.parseBoolean(filtro2)){
+                            printer.print(gson.toJson(produtoServico.requisitarProdutosEstoqueMenorMinimo()));
+                            return;
+                        }
+                    }
+                    printer.print(gson.toJson(produtoServico.requisitarTodosProdutos()));
+                }
+            }
+            // Consulta especifica.
+            if (url.length >= 4){
+                ProdutoRequisicaoDto produtoDto = new ProdutoRequisicaoDto(UUID.fromString(url[3]));
+                if (url.length == 5){
+                    if (url[4].equalsIgnoreCase("ativo")){
+                        printer.print(gson.toJson(produtoServico.requisitarProdutoAtivo(produtoDto)));
+                        return;
+                    }
+                }
+                printer.print(gson.toJson(produtoServico.requisitarProduto(produtoDto)));
+            }
+
             printer.flush();
             resp.setStatus(200);
         } catch (ProdutoInvalidoExcecao e){

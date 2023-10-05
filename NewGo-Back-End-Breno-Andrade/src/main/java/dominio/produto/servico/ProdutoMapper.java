@@ -1,14 +1,10 @@
 package dominio.produto.servico;
 
-import aplicacao.produto.dto.ProdutoAtualizacaoDto;
-import aplicacao.produto.dto.ProdutoInsercaoDto;
-import aplicacao.produto.dto.ProdutoRetornoDto;
+import aplicacao.produto.dto.*;
 import infraestrutura.produto.entidade.Produto;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutoMapper {
     public Produto insercaoDtoParaEntidade(ProdutoInsercaoDto produtoDto) {
@@ -51,6 +47,64 @@ public class ProdutoMapper {
                 produto.getDtcreate(),
                 produto.getDtupdate(),
                 produto.isLativo()
+        );
+    }
+
+    public List<ProdutoRetornoDto> listaEntidadeParaListaRetorno(List<Produto> produtos){
+        List<ProdutoRetornoDto> produtosDto = new ArrayList<>();
+        for (Produto produto : produtos){
+            produtosDto.add(entidadeParaRetornoDto(produto));
+        }
+        return produtosDto;
+    }
+
+    public ProdutoLoteRetornoDto retornoDtoParaLoteRetornoDto(ProdutoRetornoDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteRetornoDto(
+                produtoDto.getId(),
+                produtoDto.getHash(),
+                produtoDto.getNome(),
+                produtoDto.getDescricao(),
+                produtoDto.getEan13(),
+                produtoDto.getPreco(),
+                produtoDto.getQuantidade(),
+                produtoDto.getEstoque_min(),
+                produtoDto.getDtcreate(),
+                produtoDto.getDtupdate(),
+                produtoDto.isLativo(),
+                status,
+                mensagem
+        );
+    }
+
+    public ProdutoLoteErroRetornoDto insercaoDtoParaLoteErroRetornoDto(ProdutoInsercaoDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteErroRetornoDto(
+                produtoDto.getNome(),
+                produtoDto.getDescricao(),
+                produtoDto.getEan13(),
+                produtoDto.getPreco(),
+                produtoDto.getQuantidade(),
+                produtoDto.getEstoque_min(),
+                status,
+                mensagem
+        );
+    }
+
+    public ProdutoLoteAtualizacaoErroRetornoDto atualizarEstoqueDtoParaLoteErroRetornoDto(ProdutoAtualizarEstoqueDto produtoDto, String status, String mensagem){
+        return new ProdutoLoteAtualizacaoErroRetornoDto(
+                produtoDto.getHash(),
+                produtoDto.getQuantidade(),
+                status,
+                mensagem
+        );
+    }
+
+    public ProdutoAtualizacaoPrecoErroRetornoDto atualizarPrecoDtoParaLoteErroRetornoDto(ProdutoAtualizarPrecoDto produtoDto, String status, String mensagem){
+        return new ProdutoAtualizacaoPrecoErroRetornoDto(
+                produtoDto.getHash(),
+                produtoDto.getOperacao(),
+                produtoDto.getValor(),
+                status,
+                mensagem
         );
     }
 }

@@ -7,95 +7,425 @@
 	},
 	"item": [
 		{
-			"name": "Consulta Individual por Hash",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{base-url}}/{{recurso}}/d5ec7d5d-f06c-49db-b73e-f1355c3b5bd",
-					"host": [
-						"{{base-url}}"
-					],
-					"path": [
-						"{{recurso}}",
-						"d5ec7d5d-f06c-49db-b73e-f1355c3b5bd"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Postagem Individual",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nome\": \" \",\r\n    \"descricao\": \"Produto F\",\r\n    \"ean13\": \"6044425358905\",\r\n    \"preco\": 3,\r\n    \"quantidade\": 10.0,\r\n    \"estoque_min\": 10.2\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "US002 - Crud basico",
+			"item": [
+				{
+					"name": "postagem Individual",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Produto aX\",\r\n    \"descricao\": \"Produto X\",\r\n    \"ean13\": \"6044425356904\",\r\n    \"preco\": 3,\r\n    \"quantidade\": 12.0,\r\n    \"estoque_min\": 10.2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base-url}}/{{recurso}}/",
-					"host": [
-						"{{base-url}}"
-					],
-					"path": [
-						"{{recurso}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Atualizacao Individual por Hash",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"descricao\": \"ativado\",\r\n    \"preco\": 800.00,\r\n    \"quantidade\": 20.0,\r\n    \"estoque_min\": 20.0\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "modificacao por hash",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descricao\": \"ATIVADO\",\r\n    \"preco\": 900.00,\r\n    \"quantidade\": 10.0,\r\n    \"estoque_min\": 20.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/a41f9909-eb81-4ace-a8e4-9ddf04b2c053",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"a41f9909-eb81-4ace-a8e4-9ddf04b2c053"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{base-url}}/{{recurso}}/1ce22eec-24e0-470f-aff9-1185ce3ab7df/ativar",
-					"host": [
-						"{{base-url}}"
-					],
-					"path": [
-						"{{recurso}}",
-						"1ce22eec-24e0-470f-aff9-1185ce3ab7df",
-						"ativar"
-					]
+				{
+					"name": "exclusao por hash",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/f3662de8-e2bf-4810-97f4-d7f86de7b168",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"f3662de8-e2bf-4810-97f4-d7f86de7b168"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consulta pro hash",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/da291e3f-40d4-47f7-880d-7a94a95778bd",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"da291e3f-40d4-47f7-880d-7a94a95778bd"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Exclusao Individual por Hash",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{base-url}}/{{recurso}}/3a431aa7-441f-44f8-9eed-584d52520db",
-					"host": [
-						"{{base-url}}"
-					],
-					"path": [
-						"{{recurso}}",
-						"3a431aa7-441f-44f8-9eed-584d52520db"
-					]
+			"name": "US003 - Alterar Lativo",
+			"item": [
+				{
+					"name": "Alterar-Lativo",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lativo\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/a41f9909-eb81-4ace-a8e4-9ddf04b2c053/alterar-lativo",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"a41f9909-eb81-4ace-a8e4-9ddf04b2c053",
+								"alterar-lativo"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "US004 - Consultar Ativos",
+			"item": [
+				{
+					"name": "consulta individual ativo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/da291e3f-40d4-47f7-880d-7a94a95778bd/ativo",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"da291e3f-40d4-47f7-880d-7a94a95778bd",
+								"ativo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consulta lote ativos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}?lativo=true",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							],
+							"query": [
+								{
+									"key": "lativo",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "US005 - Consultar Inativos",
+			"item": [
+				{
+					"name": "consulta lote inativos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}?lativo=false",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							],
+							"query": [
+								{
+									"key": "lativo",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "US006 - Estoque Menor Minimo",
+			"item": [
+				{
+					"name": "consulta lote estoque menor que o minimo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}?estoque-menor-minimo=true",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							],
+							"query": [
+								{
+									"key": "estoque-menor-minimo",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "US007 - Cadastrar em Lote",
+			"item": [
+				{
+					"name": "postagem lote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"nome\": \"Produto z4816541\",\r\n        \"descricao\": \"Produto Y\",\r\n        \"ean13\": \"6013251111073\",\r\n        \"preco\": 3,\r\n        \"quantidade\": 12.0,\r\n        \"estoque_min\": 10.2\r\n    },\r\n    {\r\n        \"nome\": \"Produto zz2832222344\",\r\n        \"descricao\": \"Produto D\",\r\n        \"ean13\": \"6023252181051\",\r\n        \"preco\": -3,\r\n        \"quantidade\": 10.0,\r\n        \"estoque_min\": 10.2\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/inserir-lote",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"inserir-lote"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "US008 - Atualizar Preco em Lote",
+			"item": [
+				{
+					"name": "Atualizar preco valor-fixo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"hash\": \"1bcc6ddd-df62-4d4e-a5fe-e204a1bea2fe\",\r\n        \"operacao\": \"valor-fixo\",\r\n        \"valor\": -40\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/atualizar-preco",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"atualizar-preco"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar preco porcentagem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"hash\": \"1bcc6ddd-df62-4d4e-a5fe-e204a1bea2fe\",\r\n        \"operacao\": \"valor-fixo\",\r\n        \"valor\": -40\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/atualizar-preco",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"atualizar-preco"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "US009 - Atualizar Estoque em Lote",
+			"item": [
+				{
+					"name": "Atualizar estoque lote",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"hash\": \"490a208a-3f0a-42b9-9094-25465e5df5dd\",\r\n        \"quantidade\": -110.0\r\n    },\r\n    {\r\n        \"hash\": \"1bcc6ddd-df62-4d4e-a5fe-e204a1bea2fe\",\r\n        \"quantidade\": -120.0\r\n    },\r\n    {\r\n        \"hash\": \"2963cc5e-e56c-4eea-b51e-de049ee4124c\",\r\n        \"quantidade\": -130.0\r\n    },\r\n    { \r\n        \"hash\": \"da291e3f-40d4-47f7-880d-7a94a95778bd\",\r\n        \"quantidade\": -140.0\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}/atualizar-estoque",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}",
+								"atualizar-estoque"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Consulta Em Lote",
+			"item": [
+				{
+					"name": "lote sem filtro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lote com filtro lativo=true",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}?lativo=true",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							],
+							"query": [
+								{
+									"key": "lativo",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lote com filtro lativo=false",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}/{{recurso}}?lativo=false",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"{{recurso}}"
+							],
+							"query": [
+								{
+									"key": "lativo",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
